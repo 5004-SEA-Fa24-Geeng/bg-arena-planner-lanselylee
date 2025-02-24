@@ -131,9 +131,12 @@ the current layout.
 Post a copy of the run with the updated languages below this. Use three back ticks (```) to create a code block. 
 
 ```text
-// your consoles output here
-I changed the welcome message in console.properties to French:
+I would modify `console.properties` as follows:
+
+```properties
 welcome.message = Bienvenue sur Board Game Arena Planner!
+
+// your consoles output here
 
 After running the program:
 Bienvenue sur Board Game Arena Planner!
