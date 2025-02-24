@@ -14,7 +14,6 @@ Provide a class diagram for the provided code as you read through it.  For the c
 ## (INITIAL DESIGN): Class Diagram
 
 
-
 ```mermaid
 classDiagram
     class IGameList {
