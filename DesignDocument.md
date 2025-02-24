@@ -11,6 +11,9 @@ Place your class diagrams below. Make sure you check the file in the browser on 
 ### Provided Code
 
 Provide a class diagram for the provided code as you read through it.  For the classes you are adding, you will create them as a separate diagram, so for now, you can just point towards the interfaces for the provided code diagram.
+## (INITIAL DESIGN): Class Diagram
+
+
 
 ```mermaid
 classDiagram
@@ -42,12 +45,12 @@ classDiagram
     IGameList <|.. GameList
     IPlanner <|.. Planner
 
+
 <img width="869" alt="截屏2025-02-24 14 27 43" src="https://github.com/user-attachments/assets/7c71a33a-c208-43de-937f-98763479b885" />
 
 ### Your Plans/Design
 
 Create a class diagram for the classes you plan to create. This is your initial design, and it is okay if it changes. Your starting points are the interfaces. 
-
 classDiagram
     class GameList {
         -Set<BoardGame> games
@@ -78,6 +81,7 @@ classDiagram
     IGameList <|.. GameList
     IPlanner <|.. Planner
     Planner --> GameFilter : uses
+
 
 
 <img width="855" alt="截屏2025-02-24 14 28 00" src="https://github.com/user-attachments/assets/31826dad-45eb-4ecc-995b-1abd586ebf66" />
