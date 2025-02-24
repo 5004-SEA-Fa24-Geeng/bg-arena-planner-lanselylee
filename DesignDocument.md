@@ -46,7 +46,6 @@ classDiagram
     IPlanner <|.. Planner
 
 
-<img width="869" alt="截屏2025-02-24 14 27 43" src="https://github.com/user-attachments/assets/7c71a33a-c208-43de-937f-98763479b885" />
 
 ### Your Plans/Design
 
@@ -84,7 +83,7 @@ classDiagram
 
 
 
-<img width="855" alt="截屏2025-02-24 14 28 00" src="https://github.com/user-attachments/assets/31826dad-45eb-4ecc-995b-1abd586ebf66" />
+
 
 
 ## (INITIAL DESIGN): Tests to Write - Brainstorm
