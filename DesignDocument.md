@@ -12,14 +12,75 @@ Place your class diagrams below. Make sure you check the file in the browser on 
 
 Provide a class diagram for the provided code as you read through it.  For the classes you are adding, you will create them as a separate diagram, so for now, you can just point towards the interfaces for the provided code diagram.
 
+```mermaid
+classDiagram
+    class IGameList {
+        <<interface>>
+        +List<String> getGameNames()
+        +void clear()
+        +int count()
+        +void saveGame(String filename)
+        +void addToList(String str, Stream<BoardGame> filtered) throws IllegalArgumentException
+        +void removeFromList(String str) throws IllegalArgumentException
+    }
+    
+    class IPlanner {
+        <<interface>>
+        +Stream<BoardGame> filter(String filter)
+        +Stream<BoardGame> filter(String filter, GameData sortOn)
+        +Stream<BoardGame> filter(String filter, GameData sortOn, boolean ascending)
+        +void reset()
+    }
 
+    class BoardGame {
+        +String getName()
+        +String getCategory()
+        +int getMinPlayers()
+        +int getMaxPlayers()
+    }
+
+    IGameList <|.. GameList
+    IPlanner <|.. Planner
+
+<img width="869" alt="截屏2025-02-24 14 27 43" src="https://github.com/user-attachments/assets/7c71a33a-c208-43de-937f-98763479b885" />
 
 ### Your Plans/Design
 
 Create a class diagram for the classes you plan to create. This is your initial design, and it is okay if it changes. Your starting points are the interfaces. 
 
+classDiagram
+    class GameList {
+        -Set<BoardGame> games
+        +GameList()
+        +List<String> getGameNames()
+        +void clear()
+        +int count()
+        +void saveGame(String filename)
+        +void addToList(String str, Stream<BoardGame> filtered) throws IllegalArgumentException
+        +void removeFromList(String str) throws IllegalArgumentException
+    }
+
+    class Planner {
+        -Set<BoardGame> allGames
+        -List<BoardGame> currentFilteredGames
+        +Planner(Set<BoardGame> games)
+        +Stream<BoardGame> filter(String filter)
+        +Stream<BoardGame> filter(String filter, GameData sortOn)
+        +Stream<BoardGame> filter(String filter, GameData sortOn, boolean ascending)
+        +void reset()
+    }
+
+    class GameFilter {
+        +Stream<BoardGame> filterByCategory(Stream<BoardGame> games, String category)
+        +Stream<BoardGame> filterByPlayerCount(Stream<BoardGame> games, int players)
+    }
+
+    IGameList <|.. GameList
+    IPlanner <|.. Planner
+    Planner --> GameFilter : uses
 
 
+<img width="855" alt="截屏2025-02-24 14 28 00" src="https://github.com/user-attachments/assets/31826dad-45eb-4ecc-995b-1abd586ebf66" />
 
 
 ## (INITIAL DESIGN): Tests to Write - Brainstorm
@@ -36,8 +97,40 @@ Write a test (in english) that you can picture for the class diagram you have cr
 
 You should feel free to number your brainstorm. 
 
-1. Test 1..
-2. Test 2..
+### **Planned Test Cases**
+In Test-Driven Development (TDD), we define test cases first, then write code to satisfy these tests.
+
+#### **（1️1） `GameList` Related Tests**
+- **`getGameNames()`**
+  - Ensure the returned list of game names is **sorted alphabetically** (case-insensitive).
+  - Ensure the list **does not contain duplicate games**.
+
+- **`addToList()`**
+  - Add a game by **name** and verify that `count()` updates correctly.
+  - Add a game using an **index** (e.g., `"1"`, `"2-4"`) and check if the correct games are added.
+  - Use `"all"` to add all games and verify the list contains all expected games.
+  - Pass invalid inputs (e.g., `"abc"`, `"10-5"`) and ensure `IllegalArgumentException` is thrown.
+
+- **`removeFromList()`**
+  - Remove a game by **name** and verify that `count()` updates correctly.
+  - Remove a game by **index** (e.g., `"1"`, `"2-4"`) and check if the correct games are removed.
+  - Use `"all"` to clear the list and ensure `count() == 0`.
+  - Pass invalid inputs (e.g., `"xyz"`) and ensure `IllegalArgumentException` is thrown.
+
+- **`saveGame()`**
+  - Save the game list to a file and verify the file is written correctly.
+  - Read the file contents and ensure they match the sorted order of `getGameNames()`.
+
+#### **（2️） `Planner` Related Tests**
+- **`filter()`**
+  - Filter games by **minimum player count** (e.g., `minPlayers>4`) and verify results.
+  - Filter games by **name** (e.g., `name~=chess`) and check if the correct games are returned.
+  - Apply **multiple conditions** (e.g., `minPlayers>4,maxPlayers<6`) and verify that games meet both criteria.
+  - Apply **multiple filters on the same field** (e.g., `minPlayers>4,minPlayers<6`) and check if results are correct.
+  - Pass an invalid filter format and ensure an exception is thrown.
+
+- **`reset()`**
+  - After calling `reset()`, verify that all games return to the **unfiltered state**.
 
 
 
