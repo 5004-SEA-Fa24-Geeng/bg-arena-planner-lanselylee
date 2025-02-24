@@ -43,12 +43,14 @@ classDiagram
 
     IGameList <|.. GameList
     IPlanner <|.. Planner
+```
 
 
 
 ### Your Plans/Design
 
-Create a class diagram for the classes you plan to create. This is your initial design, and it is okay if it changes. Your starting points are the interfaces. 
+Create a class diagram for the classes you plan to create. This is your initial design, and it is okay if it changes. Your starting points are the interfaces.
+```mermaid
 classDiagram
     class GameList {
         -Set<BoardGame> games
@@ -79,6 +81,7 @@ classDiagram
     IGameList <|.. GameList
     IPlanner <|.. Planner
     Planner --> GameFilter : uses
+```
 
 
 
