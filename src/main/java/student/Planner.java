@@ -61,14 +61,16 @@ public class Planner implements IPlanner {
 
         Stream<BoardGame> filtered = filteredGames.stream();
         
-        // Apply filters based on prefix
-        if (filter.startsWith("minPlayers")) {
+        // Apply filters based on prefix, using case-insensitive, flexible matching
+        String lowerFilter = filter.toLowerCase().replace("_", "");
+        if (lowerFilter.startsWith("minplayers")) {
             filtered = handleMinPlayersFilter(filter, filtered);
-        } else if (filter.startsWith("name")) {
+        } else if (lowerFilter.startsWith("name")) {
             filtered = handleNameFilter(filter, filtered);
         } else {
-            // If filter doesn't match any known prefix, return empty stream
-            filtered = Stream.empty();
+            // If no known filter type matches, treat as default contains filter
+            filtered = filtered.filter(game -> 
+                game.getName().toLowerCase().contains(filter.toLowerCase()));
         }
 
         return filtered.sorted(comparator);
