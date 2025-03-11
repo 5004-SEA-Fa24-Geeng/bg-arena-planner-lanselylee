@@ -55,11 +55,11 @@ public class Planner implements IPlanner {
             String[] parts = filter.split("~=");
             if (parts.length == 2) {
                 String columnName = parts[0].trim();
-                String value = parts[1].trim();
+                String value = parts[1].trim().replaceAll("\"", "");
 
                 if (columnName.equalsIgnoreCase("name")) {
                     return allGames.stream()
-                            .filter(game -> game.getName().toLowerCase().contains(value.toLowerCase()))
+                            .filter(game -> game.getName().contains(value))
                             .sorted((g1, g2) -> g1.getName().compareToIgnoreCase(g2.getName()));
                 }
             }
