@@ -5,6 +5,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Stream;
+import java.util.stream.Collectors;
 
 /**
  * The Planner class is responsible for filtering and sorting board games based on user-defined criteria.
@@ -87,40 +88,52 @@ public class Planner implements IPlanner {
             System.out.println("Processing filter: " + filterStr);
 
             filtered = filtered.filter(game -> {
-                String gameName = game.getName();  // Don't convert to lowercase here
-                String value;
+                String gameName = game.getName();
                 
                 // Handle exact match (name==)
-                if (filterStr.toLowerCase().startsWith("name==")) {
-                    value = filterStr.substring(6).trim();
-                    return gameName.equalsIgnoreCase(value);
-                } else if (filterStr.toLowerCase().startsWith("name~=")) {
-                    // Handle substring match (name~=)
-                    value = filterStr.substring(6).trim();
-                    return gameName.toLowerCase().contains(value.toLowerCase());
-                } else if (filterStr.toLowerCase().startsWith("name>")) {
-                    // Handle greater than
-                    value = filterStr.replaceAll("(?i)name\\s*>\\s*", "").trim();
-                    return gameName.compareToIgnoreCase(value) > 0;
-                } else if (filterStr.toLowerCase().startsWith("name<=") || filterStr.toLowerCase().startsWith("name <=")) {
-                    // Handle less than or equal
-                    value = filterStr.toLowerCase().replaceAll("name\\s*<=\\s*", "").trim();
-                    return gameName.compareToIgnoreCase(value) <= 0;
-                } else if (filterStr.toLowerCase().startsWith("name<") || filterStr.toLowerCase().startsWith("name <")) {
-                    // Handle less than
-                    value = filterStr.toLowerCase().replaceAll("name\\s*<\\s*", "").trim();
-                    return gameName.compareToIgnoreCase(value) < 0;
-                } else if (filterStr.toLowerCase().startsWith("name!=") || filterStr.toLowerCase().startsWith("name !=")) {
-                    // Handle not equal
-                    value = filterStr.toLowerCase().replaceAll("name\\s*!=\\s*", "").trim();
-                    return !gameName.equals(value);
+                if (filterStr.toLowerCase().matches("\\s*name\\s*==.*")) {
+                    String value = filterStr.toLowerCase().replaceAll("\\s*name\\s*==\\s*", "").trim();
+                    return gameName.toLowerCase().equals(value);
+                } 
+                // Handle substring match (name~=)
+                else if (filterStr.toLowerCase().startsWith("name~=") || filterStr.toLowerCase().startsWith("name ~=")) {
+                    String value = filterStr.toLowerCase().replaceAll("name\\s*~=\\s*", "").trim();
+                    return gameName.toLowerCase().contains(value);
                 }
-                // If no filter matches, include the game
-                return true;
+                // Handle greater than (name>)
+                else if (filterStr.toLowerCase().startsWith("name>") || filterStr.toLowerCase().startsWith("name >")) {
+                    String value = filterStr.toLowerCase().replaceAll("name\\s*>\\s*", "").trim();
+                    return gameName.compareToIgnoreCase(value) > 0;
+                }
+                // Handle less than (name<)
+                else if (filterStr.toLowerCase().startsWith("name<")) {
+                    String value = filterStr.substring(5).trim();
+                    return gameName.compareToIgnoreCase(value) < 0 && !gameName.equalsIgnoreCase(value);
+                }
+                // Handle greater than or equal (name>=)
+                else if (filterStr.toLowerCase().startsWith("name>=")) {
+                    String value = filterStr.substring(6).trim();
+                    return gameName.compareToIgnoreCase(value) >= 0;
+                }
+                // Handle less than or equal (name<=)
+                else if (filterStr.toLowerCase().startsWith("name<=")) {
+                    String value = filterStr.substring(6).trim();
+                    return gameName.compareToIgnoreCase(value) <= 0;
+                }
+                // Handle not equal (name!=)
+                else if (filterStr.toLowerCase().startsWith("name!=")) {
+                    String value = filterStr.substring(6).trim();
+                    return !gameName.equalsIgnoreCase(value);
+                }
+                return false;
             });
         }
 
-        return filtered.sorted(comparator);
+        List<BoardGame> finalList = filtered.sorted(comparator).toList();
+        System.out.println("Games after filtering: " + finalList.stream()
+            .map(g -> "'" + g.getName() + "'")
+            .collect(Collectors.joining(", ")));
+        return finalList.stream();
     }
 
     /**
