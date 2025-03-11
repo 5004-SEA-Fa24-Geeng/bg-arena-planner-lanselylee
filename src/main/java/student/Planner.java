@@ -44,13 +44,13 @@ public class Planner implements IPlanner {
         }
 
         String[] filters = filter.split(",");
-        Stream<BoardGame> filtered = allGames.stream();
+        List<BoardGame> filteredList = new ArrayList<>(allGames);
 
         for (String f : filters) {
             String filterStr = f.trim();
             String filterLower = filterStr.toLowerCase();
 
-            filtered = filtered.filter(game -> {
+            filteredList = filteredList.stream().filter(game -> {
                 String currentGameName = game.getName();
 
                 if (filterLower.matches("\\s*name\\s*==.*")) {
@@ -76,10 +76,10 @@ public class Planner implements IPlanner {
                     return !currentGameName.equalsIgnoreCase(value);
                 }
                 return false;
-            });
+            }).toList();
         }
 
-        return filtered.sorted(comparator);
+        return filteredList.stream().sorted(comparator);
     }
 
     @Override
