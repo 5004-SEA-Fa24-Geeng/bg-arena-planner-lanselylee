@@ -44,7 +44,8 @@ public class Planner implements IPlanner {
     @Override
     public Stream<BoardGame> filter(String filter, GameData sortOn, boolean ascending) {
         if (filter == null || filter.trim().isEmpty()) {
-            return allGames.stream();
+            return allGames.stream()
+                    .sorted((g1, g2) -> g1.getName().compareToIgnoreCase(g2.getName())); // Ensuring sorted order
         }
 
         System.out.println("Filtering with: " + filter); // Debugging line
@@ -59,13 +60,15 @@ public class Planner implements IPlanner {
                 // Ensure the filter applies to game names
                 if (columnName.equalsIgnoreCase("name")) {
                     return allGames.stream()
-                            .filter(game -> game.getName().toLowerCase().contains(value.toLowerCase()));
+                            .filter(game -> game.getName().toLowerCase().contains(value.toLowerCase()))
+                            .sorted((g1, g2) -> g1.getName().compareToIgnoreCase(g2.getName())); // Sorting alphabetically
                 }
             }
         }
 
         return allGames.stream()
-                .filter(game -> game.getName().toLowerCase().contains(filter.toLowerCase()));
+                .filter(game -> game.getName().toLowerCase().contains(filter.toLowerCase()))
+                .sorted((g1, g2) -> g1.getName().compareToIgnoreCase(g2.getName())); // Ensuring sorted order
     }
 
     /**
