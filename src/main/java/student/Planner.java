@@ -107,8 +107,9 @@ public class Planner implements IPlanner {
             return filteredGames.stream()
                 .filter(game -> !game.getName().toLowerCase().equals(value));
         } else if (filter.contains("~=")) {
+            // Fix: Only return games where the name contains the exact value
             return filteredGames.stream()
-                .filter(game -> game.getName().toLowerCase().contains(value));
+                .filter(game -> game.getName().toLowerCase().contains(value.toLowerCase()));
         } else if (filter.contains(">")) {
             return filteredGames.stream()
                 .filter(game -> game.getName().toLowerCase().compareTo(value) > 0);
