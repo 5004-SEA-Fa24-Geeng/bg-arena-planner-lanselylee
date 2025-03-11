@@ -6,6 +6,7 @@ import java.util.stream.Stream;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
+import java.io.File;
 
 public class GameList implements IGameList {
     /** List of board games stored in this collection. */
@@ -83,12 +84,16 @@ public class GameList implements IGameList {
 
     @Override
     public void saveGame(String filename) {
-        try (PrintWriter writer = new PrintWriter(filename)) {
-            for (String name : getGameNames()) {
-                writer.println(name);
+        try {
+            // Create directory if it doesn't exist
+            new File(filename).getParentFile().mkdirs();
+            try (PrintWriter writer = new PrintWriter(filename)) {
+                for (String name : getGameNames()) {
+                    writer.println(name);
+                }
             }
         } catch (Exception e) {
-            throw new RuntimeException("Error saving file: " + filename);
+            throw new RuntimeException("Error saving file: " + filename + ": " + e.getMessage());
         }
     }
 
