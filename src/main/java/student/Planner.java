@@ -70,11 +70,41 @@ public class Planner implements IPlanner {
             }
         }
 
+        // Extract the operator and handle string comparisons
+        String[] parts;
+        String value;
+
+        // Handle less than (name<value)
+        if (filter.contains("<") && !filter.contains("<=")) {
+            parts = filter.split("<");
+            if (parts.length == 2) {
+                value = parts[1].trim().replaceAll("\"", "");
+                return filteredGames.stream()
+                        .filter(game -> game.getName().compareToIgnoreCase(value) < 0)
+                        .sorted((g1, g2) -> ascending
+                                ? g1.getName().compareToIgnoreCase(g2.getName())
+                                : g2.getName().compareToIgnoreCase(g1.getName()));
+            }
+        }
+
+        // Handle less than or equal (name<=value)
+        if (filter.contains("<=")) {
+            parts = filter.split("<=");
+            if (parts.length == 2) {
+                value = parts[1].trim().replaceAll("\"", "");
+                return filteredGames.stream()
+                        .filter(game -> game.getName().compareToIgnoreCase(value) <= 0)
+                        .sorted((g1, g2) -> ascending
+                                ? g1.getName().compareToIgnoreCase(g2.getName())
+                                : g2.getName().compareToIgnoreCase(g1.getName()));
+            }
+        }
+
         // Handle name contains (name~=value)
         if (filter.contains("~=")) {
-            String[] parts = filter.split("~=");
+            parts = filter.split("~=");
             if (parts.length == 2) {
-                String value = parts[1].trim().replaceAll("\"", "");
+                value = parts[1].trim().replaceAll("\"", "");
                 return filteredGames.stream()
                         .filter(game -> game.getName().toLowerCase().contains(value.toLowerCase()))
                         .sorted((g1, g2) -> ascending
@@ -85,9 +115,9 @@ public class Planner implements IPlanner {
 
         // Handle name equals (name==value)
         if (filter.contains("==")) {
-            String[] parts = filter.split("==");
+            parts = filter.split("==");
             if (parts.length == 2) {
-                String value = parts[1].trim().replaceAll("\"", "");
+                value = parts[1].trim().replaceAll("\"", "");
                 return filteredGames.stream()
                         .filter(game -> game.getName().equalsIgnoreCase(value))
                         .sorted((g1, g2) -> ascending
@@ -98,9 +128,9 @@ public class Planner implements IPlanner {
 
         // Handle name greater than or equal (name>=value)
         if (filter.contains(">=")) {
-            String[] parts = filter.split(">=");
+            parts = filter.split(">=");
             if (parts.length == 2) {
-                String value = parts[1].trim().replaceAll("\"", "");
+                value = parts[1].trim().replaceAll("\"", "");
                 return filteredGames.stream()
                         .filter(game -> game.getName().compareToIgnoreCase(value) >= 0)
                         .sorted((g1, g2) -> ascending
@@ -111,9 +141,9 @@ public class Planner implements IPlanner {
 
         // Handle name greater than (name>value)
         if (filter.contains(">") && !filter.contains(">=")) {
-            String[] parts = filter.split(">");
+            parts = filter.split(">");
             if (parts.length == 2) {
-                String value = parts[1].trim().replaceAll("\"", "");
+                value = parts[1].trim().replaceAll("\"", "");
                 return filteredGames.stream()
                         .filter(game -> game.getName().compareToIgnoreCase(value) > 0)
                         .sorted((g1, g2) -> ascending
