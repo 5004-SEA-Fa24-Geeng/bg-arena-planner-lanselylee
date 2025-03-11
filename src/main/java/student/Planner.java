@@ -59,7 +59,7 @@ public class Planner implements IPlanner {
 
                 if (columnName.equalsIgnoreCase("name")) {
                     return allGames.stream()
-                            .filter(game -> game.getName().contains(value))
+                            .filter(game -> game.getName().toLowerCase().contains(value.toLowerCase()))
                             .sorted((g1, g2) -> g1.getName().compareToIgnoreCase(g2.getName()));
                 }
             }
