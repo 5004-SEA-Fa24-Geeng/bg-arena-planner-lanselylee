@@ -51,7 +51,23 @@ public class Planner implements IPlanner {
                     .sorted((g1, g2) -> g1.getName().compareToIgnoreCase(g2.getName()));
         }
 
-        System.out.println("Filtering with: " + filter); // Debugging line
+        System.out.println("Filtering with: " + filter);
+
+        // Handle numeric comparisons for minPlayers
+        if (filter.startsWith("minPlayers")) {
+            String[] parts = filter.split("[><=]+");
+            if (parts.length == 2) {
+                int value = Integer.parseInt(parts[1].trim());
+                if (filter.contains(">")) {
+                    return filteredGames.stream()
+                            .filter(game -> game.getMinPlayers() > value)
+                            .sorted((g1, g2) -> ascending
+                                    ? g1.getName().compareToIgnoreCase(g2.getName())
+                                    : g2.getName().compareToIgnoreCase(g1.getName()));
+                }
+                // Add other numeric comparisons as needed
+            }
+        }
 
         // Handle name contains (name~=value)
         if (filter.contains("~=")) {
