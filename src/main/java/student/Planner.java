@@ -68,11 +68,15 @@ public class Planner implements IPlanner {
                                     : g2.getName().compareToIgnoreCase(g1.getName()));
                 }
             }
+            return Stream.empty();
         }
 
         // Only process string comparisons if filter starts with "name"
         if (!filter.startsWith("name")) {
-            return Stream.empty();
+            return filteredGames.stream()
+                    .sorted((g1, g2) -> ascending 
+                            ? g1.getName().compareToIgnoreCase(g2.getName())
+                            : g2.getName().compareToIgnoreCase(g1.getName()));
         }
 
         // Extract the operator and handle string comparisons
