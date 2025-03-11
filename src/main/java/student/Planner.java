@@ -70,6 +70,11 @@ public class Planner implements IPlanner {
             }
         }
 
+        // Only process string comparisons if filter starts with "name"
+        if (!filter.startsWith("name")) {
+            return Stream.empty();
+        }
+
         // Extract the operator and handle string comparisons
         String[] parts;
         String value;
