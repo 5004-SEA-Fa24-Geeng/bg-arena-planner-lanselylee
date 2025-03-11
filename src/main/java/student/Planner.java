@@ -51,27 +51,26 @@ public class Planner implements IPlanner {
             String filterLower = filterStr.toLowerCase();
 
             filteredList = filteredList.stream().filter(game -> {
-                String currentGameName = game.getName();
-
                 if (filterLower.matches("\\s*name\\s*==.*")) {
                     String value = filterStr.substring(filterStr.indexOf('=') + 2).trim();
-                    return currentGameName.equalsIgnoreCase(value);
+                    return game.getName().equalsIgnoreCase(value);
                 } else if (filterLower.matches("\\s*name\\s*~=.*")) {
                     String value = filterStr.substring(filterStr.indexOf('=') + 1).trim().toLowerCase();
-                    return currentGameName.toLowerCase().contains(value);
-                } else if (filterLower.matches("\\s*(min_players|max_players|min_time|max_time|difficulty|rating|rank|year|id)\\s*(>=|<=|==|!=|>|<).*")) {
-                    String[] parts = filterLower.split("\\s*(==|!=|>=|<=|>|<)\\s*");
+                    return game.getName().toLowerCase().contains(value);
+                } else if (filterLower.matches("\\s*(min_players|max_players|min_time|max_time|difficulty|rating|rank|year|id)\\s*(==|!=|>=|<=|>|<).*")) {
                     String field = filterLower.split("[><=!]+")[0].trim();
                     String operator = filterLower.replaceAll(".*?(>=|<=|!=|>|<|==).*", "$1").trim();
-                    int value = Integer.parseInt(filterStr.substring(filterStr.indexOf(operator) + operator.length()).trim());
+                    String valueStr = filterStr.substring(filterStr.indexOf(operator) + operator.length()).trim();
+                    
+                    double numericValue = Double.parseDouble(value);
 
-                    int fieldValue = switch (field) {
+                    double fieldValue = switch (field) {
                         case "min_players" -> game.getMinPlayers();
                         case "max_players" -> game.getMaxPlayers();
                         case "min_time" -> game.getMinPlayTime();
                         case "max_time" -> game.getMaxPlayTime();
                         case "difficulty" -> game.getDifficulty();
-                        case "rating" -> (int) game.getRating();
+                        case "rating" -> game.getRating();
                         case "rank" -> game.getRank();
                         case "year" -> game.getYearPublished();
                         case "id" -> game.getId();
@@ -79,12 +78,12 @@ public class Planner implements IPlanner {
                     };
 
                     return switch (operator) {
-                        case ">" -> value < value;
-                        case "<" -> value > fieldValue;
-                        case ">=" -> fieldValue >= value;
-                        case "<=" -> field.equalsIgnoreCase("rating") ? game.getRating() <= value : value >= field;
-                        case "==" -> field.equalsIgnoreCase("rating") ? game.getRating() == value : value == field;
-                        case "!=" -> field.equalsIgnoreCase("rating") ? game.getRating() != value : value != field;
+                        case ">" -> fieldValue > numericValue;
+                        case "<" -> fieldValue < numericValue;
+                        case ">=" -> fieldValue >= numericValue;
+                        case "<=" -> fieldValue <= numericValue;
+                        case "==" -> fieldValue == numericValue;
+                        case "!=" -> fieldValue != numericValue;
                         default -> false;
                     };
                 }
