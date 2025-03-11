@@ -70,6 +70,7 @@ public enum GameData {
      * @return the enum that matches the name.
      */
     public static GameData fromString(String name) {
+        name = name.replace("~", ""); // 忽略 `~`
         for (GameData col : GameData.values()) {
             if (col.name().equalsIgnoreCase(name) || col.getColumnName().equalsIgnoreCase(name)) {
                 return col;
@@ -77,5 +78,6 @@ public enum GameData {
         }
         throw new IllegalArgumentException("No column with name " + name);
     }
-
+    
 }
+
