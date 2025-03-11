@@ -113,7 +113,6 @@ public class Planner implements IPlanner {
                 // Handle greater than or equal (name>=)
                 else if (filterStr.toLowerCase().startsWith("name>=") || filterStr.toLowerCase().startsWith("name >=")) {
                     String value = filterStr.toLowerCase().replaceAll("name\\s*>=\\s*", "").trim();
-                    String gameName = game.getName();
                     int comparison = gameName.compareToIgnoreCase(value);
                     return comparison >= 0;
                 }
