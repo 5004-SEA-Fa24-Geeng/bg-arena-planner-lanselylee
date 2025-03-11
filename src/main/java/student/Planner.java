@@ -101,6 +101,23 @@ public class Planner implements IPlanner {
             }
         }
 
+        // Check for less than or equal operation (e.g., "name<=Go")
+        if (filter.contains("<=")) {
+            String[] parts = filter.split("<=");
+            if (parts.length == 2) {
+                String columnName = parts[0].trim();
+                String value = parts[1].trim().replaceAll("\"", "");
+
+                if (columnName.equalsIgnoreCase("name")) {
+                    return allGames.stream()
+                            .filter(game -> game.getName().compareToIgnoreCase(value) <= 0)
+                            .sorted((g1, g2) -> ascending 
+                                ? g1.getName().compareToIgnoreCase(g2.getName())
+                                : g2.getName().compareToIgnoreCase(g1.getName()));
+                }
+            }
+        }
+
         // Check for greater than or equal operation (e.g., "name>=Go")
         if (filter.contains(">=")) {
             String[] parts = filter.split(">=");
