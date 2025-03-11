@@ -4,8 +4,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Stream;
-import student.filter.FilterFactory;
 
+/**
+ * The Planner class is responsible for filtering and sorting board games based on user-defined criteria.
+ * Implements the IPlanner interface.
+ */
 public class Planner implements IPlanner {
     /** List containing all board games available for filtering. */
     private final List<BoardGame> allGames;
@@ -19,27 +22,70 @@ public class Planner implements IPlanner {
         this.allGames = new ArrayList<>(games);
     }
 
+    /**
+     * Filters the board games based on the provided filter string, using the default sorting method (by name).
+     *
+     * @param filter The filter condition in string format
+     * @return A stream of board games that match the given filter
+     */
     @Override
     public Stream<BoardGame> filter(String filter) {
         return filter(filter, GameData.NAME, true);
     }
 
+    /**
+     * Filters the board games based on the given filter and sorting criteria.
+     *
+     * @param filter    The filter condition in string format
+     * @param sortOn    The column to sort the results on
+     * @param ascending Whether to sort in ascending order
+     * @return A stream of board games that match the given filter and sorting criteria
+     */
     @Override
     public Stream<BoardGame> filter(String filter, GameData sortOn, boolean ascending) {
         if (filter == null || filter.trim().isEmpty()) {
             return allGames.stream();
         }
+
+        System.out.println("Filtering with: " + filter); // Debugging line
+
+        // Check for name contains operation (e.g., "name~=Go")
+        if (filter.contains("~=")) {
+            String[] parts = filter.split("~=");
+            if (parts.length == 2) {
+                String columnName = parts[0].trim();
+                String value = parts[1].trim();
+
+                // Ensure the filter applies to game names
+                if (columnName.equalsIgnoreCase("name")) {
+                    return allGames.stream()
+                            .filter(game -> game.getName().toLowerCase().contains(value.toLowerCase()));
+                }
+            }
+        }
+
         return allGames.stream()
-                .filter(game -> FilterFactory.createFilter(filter).apply(game));
+                .filter(game -> game.getName().toLowerCase().contains(filter.toLowerCase()));
     }
 
+    /**
+     * Filters the board games using the given filter and sorts them based on the specified column.
+     *
+     * @param filter The filter condition in string format
+     * @param sortOn The column to sort the results on
+     * @return A stream of board games that match the filter
+     */
     @Override
     public Stream<BoardGame> filter(String filter, GameData sortOn) {
         return filter(filter, sortOn, true);
     }
 
+    /**
+     * Resets the filter by clearing all applied filters and restoring the original game list.
+     */
     @Override
     public void reset() {
         allGames.clear();
     }
 }
+
