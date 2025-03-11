@@ -57,6 +57,21 @@ public class Planner implements IPlanner {
                 } else if (filterLower.matches("\\s*name\\s*~=.*")) {
                     String value = filterStr.substring(filterStr.indexOf('=') + 1).trim().toLowerCase();
                     return game.getName().toLowerCase().contains(value);
+                } else if (filterLower.matches("\\s*name\\s*>=.*")) {
+                    String value = filterStr.substring(filterStr.indexOf('=') + 1).trim();
+                    return game.getName().compareToIgnoreCase(value) >= 0;
+                } else if (filterLower.matches("\\s*name\\s*<=.*")) {
+                    String value = filterStr.substring(filterStr.indexOf('=') + 1).trim();
+                    return game.getName().compareToIgnoreCase(value) <= 0;
+                } else if (filterLower.matches("\\s*name\\s*>.*")) {
+                    String value = filterStr.substring(filterStr.indexOf('>') + 1).trim();
+                    return game.getName().compareToIgnoreCase(value) > 0;
+                } else if (filterLower.matches("\\s*name\\s*<.*")) {
+                    String value = filterStr.substring(filterStr.indexOf('<') + 1).trim();
+                    return game.getName().compareToIgnoreCase(value) < 0;
+                } else if (filterLower.matches("\\s*name\\s*!=.*")) {
+                    String value = filterStr.substring(filterStr.indexOf('=') + 1).trim();
+                    return !game.getName().equalsIgnoreCase(value);
                 } else if (filterLower.matches("\\s*(min_players|max_players|min_time|max_time|difficulty|rating|rank|year|id)\\s*(==|!=|>|<|>=|<=).*")) {
                     String field = filterLower.split("\\s*(==|!=|>=|<=|>|<)\\s*")[0];
                     String operator = filterLower.replaceAll(".*?(>=|<=|==|!=|>|<).*", "$1");
