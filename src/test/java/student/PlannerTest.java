@@ -36,7 +36,7 @@ public class PlannerTest {
      @Test
     public void testFilterName() {
         IPlanner planner = new Planner(games);
-        List<BoardGame> filtered = planner.filter("name == Go").toList();
+        List<BoardGame> filtered = planner.filter("NAME == Go").toList();
         assertEquals(1, filtered.size());
         assertEquals("Go", filtered.get(0).getName());
     }
