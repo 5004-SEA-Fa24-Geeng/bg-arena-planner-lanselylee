@@ -107,8 +107,19 @@ public class Planner implements IPlanner {
             return filteredGames.stream()
                 .filter(game -> !game.getName().equalsIgnoreCase(value));
         } else if (filter.contains("~=")) {
+            // Split search value into words
+            String[] searchWords = value.toLowerCase().split("\\s+");
             return filteredGames.stream()
-                .filter(game -> game.getName().toLowerCase().contains(value));
+                .filter(game -> {
+                    String gameName = game.getName().toLowerCase();
+                    // All search words must be present in the game name
+                    for (String word : searchWords) {
+                        if (!gameName.contains(word)) {
+                            return false;
+                        }
+                    }
+                    return true;
+                });
         } else if (filter.contains(">")) {
             return filteredGames.stream()
                 .filter(game -> game.getName().toLowerCase().compareTo(value) > 0);
