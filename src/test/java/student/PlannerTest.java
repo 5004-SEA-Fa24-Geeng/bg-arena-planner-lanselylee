@@ -86,4 +86,31 @@ public class PlannerTest {
             .collect(Collectors.toList());
         assertEquals(List.of("GoRami", "Monopoly", "Tucano"), sortedNames);
     }
+
+    @Test
+    public void testFilterNumericCaseInsensitive() {
+        IPlanner planner = new Planner(games);
+        
+        // Test case-insensitive numeric filter
+        List<BoardGame> filtered = planner.filter("min_Players>1").toList();
+        assertEquals(7, filtered.size());
+        
+        // Convert to set of names for easier comparison
+        Set<String> actualNames = filtered.stream()
+            .map(BoardGame::getName)
+            .collect(Collectors.toSet());
+        
+        Set<String> expectedNames = Set.of("Chess", "Go", "Go Fish", "golang", 
+                                         "GoRami", "Monopoly", "Tucano");
+        assertEquals(expectedNames, actualNames);
+        
+        // Test with different case
+        filtered = planner.filter("MinPlayers>5").toList();
+        actualNames = filtered.stream()
+            .map(BoardGame::getName)
+            .collect(Collectors.toSet());
+        
+        expectedNames = Set.of("GoRami", "Monopoly", "Tucano");
+        assertEquals(expectedNames, actualNames);
+    }
 }
