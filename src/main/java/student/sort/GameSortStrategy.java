@@ -13,4 +13,5 @@ public interface GameSortStrategy {
      * @return the comparator to use for sorting
      */
     Comparator<Game> getComparator();
-} 
+}
+
