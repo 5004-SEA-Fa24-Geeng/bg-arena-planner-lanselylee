@@ -77,9 +77,9 @@ public class Planner implements IPlanner {
         } else if (normalizedFilter.startsWith("name")) {
             filtered = applyNameFilter(filter);
         } else {
-            // Default to contains filter for general queries
+            // Changed default filter to use ~= (contains) behavior
             filtered = filteredGames.stream()
-                .filter(game -> game.getName().toLowerCase().contains(filter.toLowerCase()));
+                .filter(game -> game.getName().toLowerCase().contains(normalizedFilter));
         }
 
         return filtered.sorted(comparator);
