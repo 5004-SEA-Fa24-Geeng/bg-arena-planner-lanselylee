@@ -92,13 +92,10 @@ public class Planner implements IPlanner {
      * @return Stream of board games that match the filter.
      */
     private Stream<BoardGame> applyNameFilter(String filter) {
-        String value = "";
-        
         // Extract the value part and remove quotes, convert to lowercase for case-insensitive comparison
         String[] parts = filter.split("[><=!~]+", 2);
-        if (parts.length > 1) {
-            value = parts[1].trim().replaceAll("\"", "").toLowerCase();
-        }
+        final String value = parts.length > 1 ? 
+            parts[1].trim().replaceAll("\"", "").toLowerCase() : "";
         
         if (filter.contains(">=")) {
             return filteredGames.stream()
