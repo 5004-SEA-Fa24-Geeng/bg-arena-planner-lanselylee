@@ -76,8 +76,8 @@ public class Planner implements IPlanner {
                     value = filterStr.substring(filterStr.indexOf("!=") + 2).trim();
                 }
 
-                if (operator == null) {
-                    return true;  // No valid operator found, keep the game
+                if (operator == null || value == null) {
+                    return false;  // Invalid filter, exclude the game
                 }
 
                 // Handle name filters
@@ -122,7 +122,7 @@ public class Planner implements IPlanner {
                     };
                 }
 
-                return true;  // If we don't recognize the filter, keep the game
+                return false;  // If we don't recognize the filter type, exclude the game
             }).toList();
         }
 
