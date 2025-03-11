@@ -61,10 +61,14 @@ public class Planner implements IPlanner {
 
         Stream<BoardGame> filtered = filteredGames.stream();
         
+        // Apply filters based on prefix
         if (filter.startsWith("minPlayers")) {
             filtered = handleMinPlayersFilter(filter, filtered);
         } else if (filter.startsWith("name")) {
             filtered = handleNameFilter(filter, filtered);
+        } else {
+            // If filter doesn't match any known prefix, return empty stream
+            filtered = Stream.empty();
         }
 
         return filtered.sorted(comparator);
