@@ -76,7 +76,12 @@ public class Planner implements IPlanner {
                     value = filterStr.substring(filterStr.indexOf("!=") + 2).trim();
                 }
 
-                if (filterLower.startsWith("name") && operator != null) {
+                if (operator == null) {
+                    return true;  // No valid operator found, keep the game
+                }
+
+                // Handle name filters
+                if (filterLower.startsWith("name")) {
                     String gameName = game.getName();
                     return switch (operator) {
                         case "==" -> gameName.equalsIgnoreCase(value);
@@ -89,7 +94,35 @@ public class Planner implements IPlanner {
                         default -> false;
                     };
                 }
-                return false;  // If no filter matches, exclude the game
+
+                // Handle numeric filters
+                if (filterLower.matches("(min_players|max_players|min_time|max_time|difficulty|rating|rank|year|id).*")) {
+                    String field = filterLower.split("[^a-z_]")[0];
+                    double numericValue = Double.parseDouble(value);
+                    double fieldValue = switch (field) {
+                        case "min_players" -> game.getMinPlayers();
+                        case "max_players" -> game.getMaxPlayers();
+                        case "min_time" -> game.getMinPlayTime();
+                        case "max_time" -> game.getMaxPlayTime();
+                        case "difficulty" -> game.getDifficulty();
+                        case "rating" -> game.getRating();
+                        case "rank" -> game.getRank();
+                        case "year" -> game.getYearPublished();
+                        case "id" -> game.getId();
+                        default -> 0;
+                    };
+                    return switch (operator) {
+                        case ">" -> fieldValue > numericValue;
+                        case "<" -> fieldValue < numericValue;
+                        case ">=" -> fieldValue >= numericValue;
+                        case "<=" -> fieldValue <= numericValue;
+                        case "==" -> fieldValue == numericValue;
+                        case "!=" -> fieldValue != numericValue;
+                        default -> false;
+                    };
+                }
+
+                return true;  // If we don't recognize the filter, keep the game
             }).toList();
         }
 
