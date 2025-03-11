@@ -111,9 +111,11 @@ public class Planner implements IPlanner {
                     return gameName.compareToIgnoreCase(value) < 0 && !gameName.equalsIgnoreCase(value);
                 }
                 // Handle greater than or equal (name>=)
-                else if (filterStr.toLowerCase().startsWith("name>=")) {
-                    String value = filterStr.substring(6).trim();
-                    return gameName.compareToIgnoreCase(value) >= 0;
+                else if (filterStr.toLowerCase().startsWith("name>=") || filterStr.toLowerCase().startsWith("name >=")) {
+                    String value = filterStr.toLowerCase().replaceAll("name\\s*>=\\s*", "").trim();
+                    String gameName = game.getName();
+                    int comparison = gameName.compareToIgnoreCase(value);
+                    return comparison >= 0;
                 }
                 // Handle less than or equal (name<=)
                 else if (filterStr.toLowerCase().startsWith("name<=")) {
