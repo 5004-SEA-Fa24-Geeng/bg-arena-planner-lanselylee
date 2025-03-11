@@ -100,17 +100,27 @@ public class Planner implements IPlanner {
                     String value = filterStr.toLowerCase().replace("name~=", "").replace("name ~=", "").trim();
                     return gameName.contains(value);
                 }
+                // Handle greater than or equal (name>=)
+                else if (filterStr.toLowerCase().startsWith("name >=") || filterStr.toLowerCase().startsWith("name>=")) {
+                    String value = filterStr.toLowerCase().replace("name>=", "").replace("name >=", "").trim();
+                    return gameName.compareToIgnoreCase(value) >= 0;
+                }
                 // Handle greater than (name>)
                 else if (filterStr.toLowerCase().startsWith("name >") || filterStr.toLowerCase().startsWith("name>")) {
                     String value = filterStr.toLowerCase().replace("name>", "").replace("name >", "").trim();
                     return gameName.compareToIgnoreCase(value) > 0;
+                }
+                // Handle less than or equal (name<=)
+                else if (filterStr.toLowerCase().startsWith("name <=") || filterStr.toLowerCase().startsWith("name<=")) {
+                    String value = filterStr.toLowerCase().replace("name<=", "").replace("name <=", "").trim();
+                    return gameName.compareToIgnoreCase(value) <= 0;
                 }
                 // Handle less than (name<)
                 else if (filterStr.toLowerCase().startsWith("name <") || filterStr.toLowerCase().startsWith("name<")) {
                     String value = filterStr.toLowerCase().replace("name<", "").replace("name <", "").trim();
                     return gameName.compareToIgnoreCase(value) < 0;
                 }
-                return true; // If no filter matches, include the game
+                return false; // If no filter matches, exclude the game
             });
         }
 
