@@ -71,57 +71,81 @@ public class Planner implements IPlanner {
     }
 
     private Stream<BoardGame> handleNameFilter(String filter, Stream<BoardGame> stream) {
+        if (!filter.startsWith("name")) {
+            return stream;
+        }
+
         String[] parts;
         String value;
 
         // Check longer operators first
         if (filter.contains(">=")) {
             parts = filter.split(">=");
-            value = parts[1].trim().replaceAll("\"", "");
-            return stream.filter(game -> game.getName().compareToIgnoreCase(value) >= 0);
+            if (parts.length == 2 && parts[0].trim().equals("name")) {
+                value = parts[1].trim().replaceAll("\"", "");
+                return stream.filter(game -> game.getName().compareToIgnoreCase(value) >= 0);
+            }
         }
         if (filter.contains("<=")) {
             parts = filter.split("<=");
-            value = parts[1].trim().replaceAll("\"", "");
-            return stream.filter(game -> game.getName().compareToIgnoreCase(value) <= 0);
+            if (parts.length == 2 && parts[0].trim().equals("name")) {
+                value = parts[1].trim().replaceAll("\"", "");
+                return stream.filter(game -> game.getName().compareToIgnoreCase(value) <= 0);
+            }
         }
         if (filter.contains("==")) {
             parts = filter.split("==");
-            value = parts[1].trim().replaceAll("\"", "");
-            return stream.filter(game -> game.getName().equalsIgnoreCase(value));
+            if (parts.length == 2 && parts[0].trim().equals("name")) {
+                value = parts[1].trim().replaceAll("\"", "");
+                return stream.filter(game -> game.getName().equalsIgnoreCase(value));
+            }
         }
         if (filter.contains("!=")) {
             parts = filter.split("!=");
-            value = parts[1].trim().replaceAll("\"", "");
-            return stream.filter(game -> !game.getName().equalsIgnoreCase(value));
+            if (parts.length == 2 && parts[0].trim().equals("name")) {
+                value = parts[1].trim().replaceAll("\"", "");
+                return stream.filter(game -> !game.getName().equalsIgnoreCase(value));
+            }
         }
         if (filter.contains("~=")) {
             parts = filter.split("~=");
-            value = parts[1].trim().replaceAll("\"", "");
-            return stream.filter(game -> game.getName().toLowerCase().contains(value.toLowerCase()));
+            if (parts.length == 2 && parts[0].trim().equals("name")) {
+                value = parts[1].trim().replaceAll("\"", "");
+                return stream.filter(game -> game.getName().toLowerCase().contains(value.toLowerCase()));
+            }
         }
-        // Check single-character operators last
         if (filter.contains(">")) {
             parts = filter.split(">");
-            value = parts[1].trim().replaceAll("\"", "");
-            return stream.filter(game -> game.getName().compareToIgnoreCase(value) > 0);
+            if (parts.length == 2 && parts[0].trim().equals("name")) {
+                value = parts[1].trim().replaceAll("\"", "");
+                return stream.filter(game -> game.getName().compareToIgnoreCase(value) > 0);
+            }
         }
         if (filter.contains("<")) {
             parts = filter.split("<");
-            value = parts[1].trim().replaceAll("\"", "");
-            return stream.filter(game -> game.getName().compareToIgnoreCase(value) < 0);
+            if (parts.length == 2 && parts[0].trim().equals("name")) {
+                value = parts[1].trim().replaceAll("\"", "");
+                return stream.filter(game -> game.getName().compareToIgnoreCase(value) < 0);
+            }
         }
         return stream;
     }
 
     private Stream<BoardGame> handleMinPlayersFilter(String filter, Stream<BoardGame> stream) {
+        if (!filter.startsWith("minPlayers")) {
+            return stream;
+        }
+
         String[] parts = filter.split("[><=]+");
-        if (parts.length == 2) {
-            int value = Integer.parseInt(parts[1].trim());
-            if (filter.contains(">")) {
-                return stream.filter(game -> game.getMinPlayers() > value);
+        if (parts.length == 2 && parts[0].trim().equals("minPlayers")) {
+            try {
+                int value = Integer.parseInt(parts[1].trim());
+                if (filter.contains(">")) {
+                    return stream.filter(game -> game.getMinPlayers() > value);
+                }
+            } catch (NumberFormatException e) {
+                return stream;
             }
-            // Add other numeric comparisons as needed
         }
         return stream;
     }
