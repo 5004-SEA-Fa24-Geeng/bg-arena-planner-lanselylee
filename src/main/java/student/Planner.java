@@ -60,22 +60,26 @@ public class Planner implements IPlanner {
                 if (columnName.equalsIgnoreCase("name")) {
                     return allGames.stream()
                             .filter(game -> game.getName().toLowerCase().contains(value.toLowerCase()))
-                            .sorted((g1, g2) -> g1.getName().compareToIgnoreCase(g2.getName()));
+                            .sorted((g1, g2) -> ascending ? 
+                                g1.getName().compareToIgnoreCase(g2.getName()) :
+                                g2.getName().compareToIgnoreCase(g1.getName()));
                 }
             }
         }
         
-        // Check for name equals operation (e.g., "name==Go")
-        if (filter.contains("==")) {
-            String[] parts = filter.split("==");
+        // Check for greater than operation (e.g., "name>Go")
+        if (filter.contains(">")) {
+            String[] parts = filter.split(">");
             if (parts.length == 2) {
                 String columnName = parts[0].trim();
-                String value = parts[1].trim();
+                String value = parts[1].trim().replaceAll("\"", "");
 
                 if (columnName.equalsIgnoreCase("name")) {
                     return allGames.stream()
-                            .filter(game -> game.getName().equalsIgnoreCase(value))
-                            .sorted((g1, g2) -> g1.getName().compareToIgnoreCase(g2.getName()));
+                            .filter(game -> game.getName().compareToIgnoreCase(value) > 0)
+                            .sorted((g1, g2) -> ascending ? 
+                                g1.getName().compareToIgnoreCase(g2.getName()) :
+                                g2.getName().compareToIgnoreCase(g1.getName()));
                 }
             }
         }
@@ -83,7 +87,9 @@ public class Planner implements IPlanner {
         // Default case: treat the filter as a simple name contains search
         return allGames.stream()
                 .filter(game -> game.getName().toLowerCase().contains(filter.toLowerCase()))
-                .sorted((g1, g2) -> g1.getName().compareToIgnoreCase(g2.getName()));
+                .sorted((g1, g2) -> ascending ? 
+                    g1.getName().compareToIgnoreCase(g2.getName()) :
+                    g2.getName().compareToIgnoreCase(g1.getName()));
     }
 
     /**
