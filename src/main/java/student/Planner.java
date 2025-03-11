@@ -12,24 +12,24 @@ import java.util.stream.Stream;
 public class Planner implements IPlanner {
     /** List containing all board games available for filtering. */
     private final List<BoardGame> allGames;
-    /** List that stores currently filtered games */
+    /** List that stores currently filtered games. */
     private List<BoardGame> filteredGames;
 
     /**
      * Constructs a new Planner with the given set of board games.
      *
-     * @param games the set of board games to be managed by this planner
+     * @param games The set of board games to be managed by this planner.
      */
     public Planner(Set<BoardGame> games) {
         this.allGames = new ArrayList<>(games);
-        this.filteredGames = new ArrayList<>(games); // Ensure filtered list starts with all games
+        this.filteredGames = new ArrayList<>(games);
     }
 
     /**
      * Filters the board games based on the provided filter string, using the default sorting method (by name).
      *
-     * @param filter The filter condition in string format
-     * @return A stream of board games that match the given filter
+     * @param filter The filter condition in string format.
+     * @return A stream of board games that match the given filter.
      */
     @Override
     public Stream<BoardGame> filter(String filter) {
@@ -39,10 +39,10 @@ public class Planner implements IPlanner {
     /**
      * Filters the board games based on the given filter and sorting criteria.
      *
-     * @param filter    The filter condition in string format
-     * @param sortOn    The column to sort the results on
-     * @param ascending Whether to sort in ascending order
-     * @return A stream of board games that match the given filter and sorting criteria
+     * @param filter    The filter condition in string format.
+     * @param sortOn    The column to sort the results on.
+     * @param ascending Whether to sort in ascending order.
+     * @return A stream of board games that match the given filter and sorting criteria.
      */
     @Override
     public Stream<BoardGame> filter(String filter, GameData sortOn, boolean ascending) {
@@ -53,34 +53,45 @@ public class Planner implements IPlanner {
 
         System.out.println("Filtering with: " + filter); // Debugging line
 
-        // Handle "name==" for exact match
-        if (filter.contains("==")) {
-            return applyStringFilter(filter, "==", (gameName, value) -> gameName.equalsIgnoreCase(value), ascending);
-        }
-
-        // Handle "name~=" for partial match
+        // Handle name contains (name~=value)
         if (filter.contains("~=")) {
-            return applyStringFilter(filter, "~=", (gameName, value) -> gameName.toLowerCase().contains(value.toLowerCase()), ascending);
+            return applyStringFilter(filter, "~=", (gameName, value) ->
+                    gameName.toLowerCase().contains(value.toLowerCase()), ascending);
         }
 
-        // Handle "name>" for lexicographically greater than match
-        if (filter.contains(">") && !filter.contains(">=")) { // Ensure it's only ">"
-            return applyStringFilter(filter, ">", (gameName, value) -> gameName.compareToIgnoreCase(value) > 0, ascending);
+        // Handle name equals (name==value)
+        if (filter.contains("==")) {
+            return applyStringFilter(filter, "==", String::equalsIgnoreCase, ascending);
         }
 
-        // Handle "name>=" for greater than or equal match
+        // Handle name not equals (name!=value)
+        if (filter.contains("!=")) {
+            return applyStringFilter(filter, "!=", (gameName, value) ->
+                    !gameName.equalsIgnoreCase(value), ascending);
+        }
+
+        // Handle name greater than (name>value)
+        if (filter.contains(">") && !filter.contains(">=")) {
+            return applyStringFilter(filter, ">", (gameName, value) ->
+                    gameName.compareToIgnoreCase(value) > 0, ascending);
+        }
+
+        // Handle name greater than or equal (name>=value)
         if (filter.contains(">=")) {
-            return applyStringFilter(filter, ">=", (gameName, value) -> gameName.compareToIgnoreCase(value) >= 0, ascending);
+            return applyStringFilter(filter, ">=", (gameName, value) ->
+                    gameName.compareToIgnoreCase(value) >= 0, ascending);
         }
 
-        // Handle "name<" for lexicographically less than match
-        if (filter.contains("<") && !filter.contains("<=")) { // Ensure it's only "<"
-            return applyStringFilter(filter, "<", (gameName, value) -> gameName.compareToIgnoreCase(value) < 0, ascending);
+        // Handle name less than (name<value)
+        if (filter.contains("<") && !filter.contains("<=")) {
+            return applyStringFilter(filter, "<", (gameName, value) ->
+                    gameName.compareToIgnoreCase(value) < 0, ascending);
         }
 
-        // Handle "name<=" for less than or equal match
+        // Handle name less than or equal (name<=value)
         if (filter.contains("<=")) {
-            return applyStringFilter(filter, "<=", (gameName, value) -> gameName.compareToIgnoreCase(value) <= 0, ascending);
+            return applyStringFilter(filter, "<=", (gameName, value) ->
+                    gameName.compareToIgnoreCase(value) <= 0, ascending);
         }
 
         // Default: Treat filter as name contains
@@ -94,9 +105,9 @@ public class Planner implements IPlanner {
     /**
      * Filters the board games using the given filter and sorts them based on the specified column.
      *
-     * @param filter The filter condition in string format
-     * @param sortOn The column to sort the results on
-     * @return A stream of board games that match the filter
+     * @param filter The filter condition in string format.
+     * @param sortOn The column to sort the results on.
+     * @return A stream of board games that match the filter.
      */
     @Override
     public Stream<BoardGame> filter(String filter, GameData sortOn) {
@@ -104,21 +115,21 @@ public class Planner implements IPlanner {
     }
 
     /**
-     * Resets the filter by clearing all applied filters and restoring the original game list.
+     * Resets the filter by restoring the filtered list to the original game list.
      */
     @Override
     public void reset() {
-        this.filteredGames = new ArrayList<>(allGames); // Restore to full game list
+        this.filteredGames = new ArrayList<>(allGames);
     }
 
     /**
      * Helper method to apply string-based filtering based on a given operator.
      *
-     * @param filter The filter string
-     * @param operator The operator used in the filter (e.g., "==", "~=", ">", "<")
-     * @param comparisonFunction A lambda function defining the comparison condition
-     * @param ascending Whether to sort in ascending order
-     * @return A stream of filtered and sorted board games
+     * @param filter The filter string.
+     * @param operator The operator used in the filter (e.g., "==", "~=", ">", "<").
+     * @param comparisonFunction A lambda function defining the comparison condition.
+     * @param ascending Whether to sort in ascending order.
+     * @return A stream of filtered and sorted board games.
      */
     private Stream<BoardGame> applyStringFilter(String filter, String operator,
                                                 StringComparator comparisonFunction, boolean ascending) {
