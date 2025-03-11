@@ -87,24 +87,20 @@ public class Planner implements IPlanner {
             System.out.println("Processing filter: " + filterStr);
 
             filtered = filtered.filter(game -> {
-                String gameName = game.getName().toLowerCase();
+                String gameName = game.getName();  // Don't convert to lowercase here
                 String value;
                 
                 // Handle exact match (name==)
-                if (filterStr.toLowerCase().startsWith("name==") || filterStr.toLowerCase().startsWith("name ==")) {
-                    value = filterStr.toLowerCase().replaceAll("name\\s*==\\s*", "").trim();
-                    return gameName.equals(value);
-                } else if (filterStr.toLowerCase().startsWith("name~=") || filterStr.toLowerCase().startsWith("name ~=")) {
+                if (filterStr.toLowerCase().startsWith("name==")) {
+                    value = filterStr.substring(6).trim();
+                    return gameName.equalsIgnoreCase(value);
+                } else if (filterStr.toLowerCase().startsWith("name~=")) {
                     // Handle substring match (name~=)
-                    value = filterStr.toLowerCase().replaceAll("name\\s*~=\\s*", "").trim();
-                    return gameName.contains(value);
-                } else if (filterStr.toLowerCase().startsWith("name>=") || filterStr.toLowerCase().startsWith("name >=")) {
-                    // Handle greater than or equal
-                    value = filterStr.toLowerCase().replaceAll("name\\s*>=\\s*", "").trim();
-                    return gameName.compareToIgnoreCase(value) >= 0;
-                } else if (filterStr.toLowerCase().startsWith("name>") || filterStr.toLowerCase().startsWith("name >")) {
+                    value = filterStr.substring(6).trim();
+                    return gameName.toLowerCase().contains(value.toLowerCase());
+                } else if (filterStr.toLowerCase().startsWith("name>")) {
                     // Handle greater than
-                    value = filterStr.toLowerCase().replaceAll("name\\s*>\\s*", "").trim();
+                    value = filterStr.replaceAll("(?i)name\\s*>\\s*", "").trim();
                     return gameName.compareToIgnoreCase(value) > 0;
                 } else if (filterStr.toLowerCase().startsWith("name<=") || filterStr.toLowerCase().startsWith("name <=")) {
                     // Handle less than or equal
