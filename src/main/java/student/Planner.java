@@ -1,7 +1,5 @@
 package student;
 
-import student.filter.FilterFactory;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -31,7 +29,7 @@ public class Planner implements IPlanner {
             return allGames.stream();
         }
         return allGames.stream()
-                .filter(game -> FilterFactory.createFilter(filter).apply((Game) game));
+                .filter(game -> game.getName().toLowerCase().contains(filter.toLowerCase()));
     }
 
     @Override

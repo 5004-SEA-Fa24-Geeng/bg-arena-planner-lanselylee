@@ -148,7 +148,64 @@ For the final design, you just need to do a single diagram that includes both th
 
 > [!WARNING]
 > If you resubmit your assignment for manual grading, this is a section that often needs updating. You should double check with every resubmit to make sure it is up to date.
+classDiagram
+    class AIChatHistory {
+        -messages: Message[]
+        +addMessage()
+        +deleteMessage()
+        +clearHistory()
+    }
 
+    class Message {
+        +id: string
+        +content: string
+        +role: string
+        +timestamp: Date
+    }
+
+    class ChatInterface {
+        -messages: Message[]
+        -isLoading: boolean
+        +handleSendMessage()
+        +handleDeleteMessage()
+        +render()
+    }
+
+    class MessageList {
+        -messages: Message[]
+        +render()
+    }
+
+    class MessageInput {
+        -inputValue: string
+        +handleSubmit()
+        +handleInputChange()
+    }
+
+    class ChatMessage {
+        +message: Message
+        +onDelete()
+        +render()
+    }
+
+    class LocalStorage {
+        +saveMessages()
+        +loadMessages()
+        +clearMessages()
+    }
+
+    class APIService {
+        +sendMessage()
+        +getResponse()
+    }
+
+    AIChatHistory --> Message : contains
+    AIChatHistory --> LocalStorage : uses
+    AIChatHistory --> APIService : uses
+    ChatInterface --> MessageList : contains
+    ChatInterface --> MessageInput : contains
+    MessageList --> ChatMessage : contains
+    ChatMessage --> Message : uses
 
 
 
