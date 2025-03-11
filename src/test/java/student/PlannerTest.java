@@ -9,6 +9,8 @@ import java.util.List;
 import java.util.Set;
 import student.Planner;
 import student.IPlanner;
+import java.util.stream.Collectors;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 
 /**
@@ -36,9 +38,27 @@ public class PlannerTest {
      @Test
     public void testFilterName() {
         IPlanner planner = new Planner(games);
-        List<BoardGame> filtered = planner.filter("NAME == Go").toList();
+        
+        // Test exact match
+        List<BoardGame> filtered = planner.filter("name == Go").toList();
         assertEquals(1, filtered.size());
         assertEquals("Go", filtered.get(0).getName());
+        
+        // Test contains
+        filtered = planner.filter("name ~= Go").toList();
+        assertEquals(5, filtered.size());
+        Set<String> expectedNames = Set.of("Go", "Go Fish", "golang", "GoRami", "Monopoly");
+        Set<String> actualNames = filtered.stream()
+            .map(BoardGame::getName)
+            .collect(Collectors.toSet());
+        assertEquals(expectedNames, actualNames);
+        
+        // Test greater than
+        filtered = planner.filter("name > Go").toList();
+        assertTrue(filtered.size() > 0, "Should find games with names greater than 'Go'");
+        filtered.forEach(game -> 
+            assertTrue(game.getName().compareTo("Go") > 0, 
+                "Each game name should be greater than 'Go'"));
     }
     
 
