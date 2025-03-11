@@ -47,10 +47,19 @@ public class Planner implements IPlanner {
      */
     @Override
     public Stream<BoardGame> filter(String filter, GameData sortOn, boolean ascending) {
-        // Default sorting comparator
-        Comparator<BoardGame> comparator = (g1, g2) -> ascending 
-            ? g1.getName().compareToIgnoreCase(g2.getName())
-            : g2.getName().compareToIgnoreCase(g1.getName());
+        // Define comparator based on sortOn parameter and ascending flag
+        Comparator<BoardGame> comparator;
+        
+        if (sortOn == GameData.NAME) {
+            comparator = (g1, g2) -> ascending 
+                ? g1.getName().compareToIgnoreCase(g2.getName())
+                : g2.getName().compareToIgnoreCase(g1.getName());
+        } else {
+            // Default to name sorting if sortOn is not handled
+            comparator = (g1, g2) -> ascending 
+                ? g1.getName().compareToIgnoreCase(g2.getName())
+                : g2.getName().compareToIgnoreCase(g1.getName());
+        }
 
         // If no filter, return sorted stream
         if (filter == null || filter.trim().isEmpty()) {
@@ -59,102 +68,85 @@ public class Planner implements IPlanner {
 
         System.out.println("Filtering with: " + filter);
 
-        // Parse filter into components
-        String normalizedFilter = filter.toLowerCase().replace("_", "");
-        
-        // Determine filter type and apply appropriate filter
+        // Apply appropriate filter based on the filter string
         Stream<BoardGame> filtered;
+        
+        String normalizedFilter = filter.toLowerCase().replace("_", "");
         if (normalizedFilter.startsWith("minplayers")) {
-            filtered = handleMinPlayersFilter(filter, filteredGames.stream());
+            filtered = applyMinPlayersFilter(filter);
         } else if (normalizedFilter.startsWith("name")) {
-            filtered = handleNameFilter(filter, filteredGames.stream());
+            filtered = applyNameFilter(filter);
         } else {
-            // If filter doesn't match known patterns, return empty stream
-            return Stream.empty();
+            // Default to contains filter for general queries
+            filtered = filteredGames.stream()
+                .filter(game -> game.getName().toLowerCase().contains(filter.toLowerCase()));
         }
 
-        // Apply sorting to filtered results
         return filtered.sorted(comparator);
     }
 
-    private Stream<BoardGame> handleNameFilter(String filter, Stream<BoardGame> stream) {
-        if (!filter.startsWith("name")) {
-            return stream;
+    /**
+     * Applies name-based filters based on the given filter string.
+     *
+     * @param filter The filter condition in string format.
+     * @return Stream of board games that match the filter.
+     */
+    private Stream<BoardGame> applyNameFilter(String filter) {
+        String value = "";
+        
+        // Extract the value part and remove quotes, convert to lowercase for case-insensitive comparison
+        String[] parts = filter.split("[><=!~]+", 2);
+        if (parts.length > 1) {
+            value = parts[1].trim().replaceAll("\"", "").toLowerCase();
         }
-
-        String[] parts;
-        String value;
-
-        // Check longer operators first
+        
         if (filter.contains(">=")) {
-            parts = filter.split(">=");
-            if (parts.length == 2 && parts[0].trim().equals("name")) {
-                value = parts[1].trim().replaceAll("\"", "");
-                return stream.filter(game -> game.getName().compareToIgnoreCase(value) >= 0);
-            }
+            return filteredGames.stream()
+                .filter(game -> game.getName().toLowerCase().compareTo(value) >= 0);
+        } else if (filter.contains("<=")) {
+            return filteredGames.stream()
+                .filter(game -> game.getName().toLowerCase().compareTo(value) <= 0);
+        } else if (filter.contains("==")) {
+            return filteredGames.stream()
+                .filter(game -> game.getName().toLowerCase().equals(value));
+        } else if (filter.contains("!=")) {
+            return filteredGames.stream()
+                .filter(game -> !game.getName().toLowerCase().equals(value));
+        } else if (filter.contains("~=")) {
+            return filteredGames.stream()
+                .filter(game -> game.getName().toLowerCase().contains(value));
+        } else if (filter.contains(">")) {
+            return filteredGames.stream()
+                .filter(game -> game.getName().toLowerCase().compareTo(value) > 0);
+        } else if (filter.contains("<")) {
+            return filteredGames.stream()
+                .filter(game -> game.getName().toLowerCase().compareTo(value) < 0);
         }
-        if (filter.contains("<=")) {
-            parts = filter.split("<=");
-            if (parts.length == 2 && parts[0].trim().equals("name")) {
-                value = parts[1].trim().replaceAll("\"", "");
-                return stream.filter(game -> game.getName().compareToIgnoreCase(value) <= 0);
-            }
-        }
-        if (filter.contains("==")) {
-            parts = filter.split("==");
-            if (parts.length == 2 && parts[0].trim().equals("name")) {
-                value = parts[1].trim().replaceAll("\"", "");
-                return stream.filter(game -> game.getName().equalsIgnoreCase(value));
-            }
-        }
-        if (filter.contains("!=")) {
-            parts = filter.split("!=");
-            if (parts.length == 2 && parts[0].trim().equals("name")) {
-                value = parts[1].trim().replaceAll("\"", "");
-                return stream.filter(game -> !game.getName().equalsIgnoreCase(value));
-            }
-        }
-        if (filter.contains("~=")) {
-            parts = filter.split("~=");
-            if (parts.length == 2 && parts[0].trim().equals("name")) {
-                value = parts[1].trim().replaceAll("\"", "");
-                return stream.filter(game -> game.getName().toLowerCase().contains(value.toLowerCase()));
-            }
-        }
-        if (filter.contains(">")) {
-            parts = filter.split(">");
-            if (parts.length == 2 && parts[0].trim().equals("name")) {
-                value = parts[1].trim().replaceAll("\"", "");
-                return stream.filter(game -> game.getName().compareToIgnoreCase(value) > 0);
-            }
-        }
-        if (filter.contains("<")) {
-            parts = filter.split("<");
-            if (parts.length == 2 && parts[0].trim().equals("name")) {
-                value = parts[1].trim().replaceAll("\"", "");
-                return stream.filter(game -> game.getName().compareToIgnoreCase(value) < 0);
-            }
-        }
-        return stream;
+        
+        // If no operator is matched, return unfiltered stream
+        return filteredGames.stream();
     }
 
-    private Stream<BoardGame> handleMinPlayersFilter(String filter, Stream<BoardGame> stream) {
-        if (!filter.startsWith("minPlayers")) {
-            return stream;
-        }
-
-        String[] parts = filter.split("[><=]+");
-        if (parts.length == 2 && parts[0].trim().equals("minPlayers")) {
+    /**
+     * Applies minimum player filter based on the given filter string.
+     *
+     * @param filter The filter condition in string format.
+     * @return Stream of board games that match the filter.
+     */
+    private Stream<BoardGame> applyMinPlayersFilter(String filter) {
+        if (filter.contains(">")) {
             try {
-                int value = Integer.parseInt(parts[1].trim());
-                if (filter.contains(">")) {
-                    return stream.filter(game -> game.getMinPlayers() > value);
-                }
+                int value = Integer.parseInt(filter.split(">")[1].trim());
+                return filteredGames.stream()
+                    .filter(game -> game.getMinPlayers() > value);
             } catch (NumberFormatException e) {
-                return stream;
+                // In case of parsing error, return unfiltered
+                return filteredGames.stream();
             }
         }
-        return stream;
+        
+        // If no operator is matched, return unfiltered stream
+        return filteredGames.stream();
     }
 
     /**
