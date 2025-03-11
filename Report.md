@@ -74,7 +74,7 @@ A Map<K, V> stores key-value pairs. Example:
 Map<String, Integer> gameMap = new HashMap<>();
 gameMap.put("Chess", 2);
 gameMap.put("Poker", 4);
-n GamesLoader.java, a Map helps map column names to their indexes, making it easy to retrieve data dynamically.
+In GamesLoader.java, a Map helps map column names to their indexes, making it easy to retrieve data dynamically.
 
 Different types of Map:
 
