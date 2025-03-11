@@ -49,58 +49,47 @@ public class Planner implements IPlanner {
             String filterLower = filterStr.toLowerCase();
 
             filteredList = filteredList.stream().filter(game -> {
-                if (filterLower.matches("\\s*name\\s*==.*")) {
-                    String value = filterStr.substring(filterStr.indexOf("==") + 2).trim();
-                    return game.getName().equalsIgnoreCase(value);
-                } else if (filterLower.matches("\\s*name\\s*~=.*")) {
-                    String value = filterStr.substring(filterStr.indexOf("~=") + 2).trim();
-                    return game.getName().toLowerCase().contains(value.toLowerCase());
-                } else if (filterLower.matches("\\s*name\\s*>=.*")) {
-                    String value = filterStr.substring(filterStr.indexOf(">=") + 2).trim();
-                    return game.getName().compareToIgnoreCase(value) >= 0;
-                } else if (filterLower.matches("\\s*name\\s*<=.*")) {
-                    String value = filterStr.substring(filterStr.indexOf("<=") + 2).trim();
-                    return game.getName().compareToIgnoreCase(value) <= 0;
-                } else if (filterLower.matches("\\s*name\\s*>.*")) {
-                    String value = filterStr.substring(filterStr.indexOf(">") + 1).trim();
-                    return game.getName().compareToIgnoreCase(value) > 0;
-                } else if (filterLower.matches("\\s*name\\s*<.*")) {
-                    String value = filterStr.substring(filterStr.indexOf("<") + 1).trim();
-                    return game.getName().compareToIgnoreCase(value) < 0;
-                } else if (filterLower.matches("\\s*name\\s*!=.*")) {
-                    String value = filterStr.substring(filterStr.indexOf("!=") + 2).trim();
-                    return !game.getName().equalsIgnoreCase(value);
-                } else if (filterLower.matches("\\s*(min_players|max_players|min_time|max_time|difficulty|rating|rank|year|id)\\s*(==|!=|>|<|>=|<=).*")) {
-                    String field = filterLower.split("\\s*(==|!=|>=|<=|>|<)\\s*")[0];
-                    String operator = filterLower.replaceAll(".*?(>=|<=|==|!=|>|<).*", "$1");
-                    String valueStr = filterStr.substring(filterStr.indexOf(operator) + operator.length()).trim();
+                // Extract operator and value first
+                String operator = null;
+                String value = null;
+                
+                if (filterLower.contains("==")) {
+                    operator = "==";
+                    value = filterStr.substring(filterStr.indexOf("==") + 2).trim();
+                } else if (filterLower.contains("~=")) {
+                    operator = "~=";
+                    value = filterStr.substring(filterStr.indexOf("~=") + 2).trim();
+                } else if (filterLower.contains(">=")) {
+                    operator = ">=";
+                    value = filterStr.substring(filterStr.indexOf(">=") + 2).trim();
+                } else if (filterLower.contains(">")) {
+                    operator = ">";
+                    value = filterStr.substring(filterStr.indexOf(">") + 1).trim();
+                } else if (filterLower.contains("<=")) {
+                    operator = "<=";
+                    value = filterStr.substring(filterStr.indexOf("<=") + 2).trim();
+                } else if (filterLower.contains("<")) {
+                    operator = "<";
+                    value = filterStr.substring(filterStr.indexOf("<") + 1).trim();
+                } else if (filterLower.contains("!=")) {
+                    operator = "!=";
+                    value = filterStr.substring(filterStr.indexOf("!=") + 2).trim();
+                }
 
-                    double numericValue = Double.parseDouble(valueStr);
-
-                    double fieldValue = switch (field) {
-                        case "min_players" -> game.getMinPlayers();
-                        case "max_players" -> game.getMaxPlayers();
-                        case "min_time" -> game.getMinPlayTime();
-                        case "max_time" -> game.getMaxPlayTime();
-                        case "difficulty" -> game.getDifficulty();
-                        case "rating" -> game.getRating();
-                        case "rank" -> game.getRank();
-                        case "year" -> game.getYearPublished();
-                        case "id" -> game.getId();
-                        default -> 0;
-                    };
-
+                if (filterLower.startsWith("name") && operator != null) {
+                    String gameName = game.getName();
                     return switch (operator) {
-                        case ">" -> fieldValue > numericValue;
-                        case "<" -> fieldValue < numericValue;
-                        case ">=" -> fieldValue >= numericValue;
-                        case "<=" -> fieldValue <= numericValue;
-                        case "==" -> fieldValue == numericValue;
-                        case "!=" -> fieldValue != numericValue;
+                        case "==" -> gameName.equalsIgnoreCase(value);
+                        case "~=" -> gameName.toLowerCase().contains(value.toLowerCase());
+                        case ">=" -> gameName.compareToIgnoreCase(value) >= 0;
+                        case ">" -> gameName.compareToIgnoreCase(value) > 0;
+                        case "<=" -> gameName.compareToIgnoreCase(value) <= 0;
+                        case "<" -> gameName.compareToIgnoreCase(value) < 0;
+                        case "!=" -> !gameName.equalsIgnoreCase(value);
                         default -> false;
                     };
                 }
-                return true;  // Keep games that don't match any filter
+                return false;  // If no filter matches, exclude the game
             }).toList();
         }
 
