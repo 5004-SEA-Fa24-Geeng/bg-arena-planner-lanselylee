@@ -57,7 +57,7 @@ public class Planner implements IPlanner {
                     String value = filterStr.substring(filterStr.indexOf('=') + 2).trim();
                     return currentGameName.equalsIgnoreCase(value);
                 } else if (filterLower.matches("\\s*name\\s*~=.*")) {
-                    String value = filterStr.substring(filterStr.indexOf('=') + 2).trim().toLowerCase();
+                    String value = filterStr.substring(filterStr.indexOf('=') + 1).trim().toLowerCase();
                     return currentGameName.toLowerCase().contains(value);
                 } else if (filterLower.matches("\\s*name\\s*>=.*")) {
                     String value = filterStr.substring(filterStr.indexOf('=') + 1).trim();
