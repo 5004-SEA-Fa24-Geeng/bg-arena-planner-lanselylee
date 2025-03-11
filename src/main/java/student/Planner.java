@@ -57,12 +57,12 @@ public class Planner implements IPlanner {
                 } else if (filterLower.matches("\\s*name\\s*~=.*")) {
                     String value = filterStr.substring(filterStr.indexOf('=') + 1).trim().toLowerCase();
                     return game.getName().toLowerCase().contains(value);
-                } else if (filterLower.matches("\\s*(min_players|max_players|min_time|max_time|difficulty|rating|rank|year|id)\\s*(==|!=|>=|<=|>|<).*")) {
-                    String field = filterLower.split("[><=!]+")[0].trim();
-                    String operator = filterLower.replaceAll(".*?(>=|<=|!=|>|<|==).*", "$1").trim();
+                } else if (filterLower.matches("\\s*(min_players|max_players|min_time|max_time|difficulty|rating|rank|year|id)\\s*(==|!=|>|<|>=|<=).*")) {
+                    String field = filterLower.split("\\s*(==|!=|>=|<=|>|<)\\s*")[0];
+                    String operator = filterLower.replaceAll(".*?(>=|<=|==|!=|>|<).*", "$1");
                     String valueStr = filterStr.substring(filterStr.indexOf(operator) + operator.length()).trim();
-                    
-                    double numericValue = Double.parseDouble(value);
+
+                    double numericValue = Double.parseDouble(valueStr);
 
                     double fieldValue = switch (field) {
                         case "min_players" -> game.getMinPlayers();
