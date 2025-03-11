@@ -37,30 +37,58 @@ public class Game extends BoardGame {
     }
 
     // Getters
+    /**
+     * Gets the name of the game.
+     * @return the game name
+     */
     public String getName() {
         return name;
     }
     
+    /**
+     * Gets the minimum number of players required.
+     * @return the minimum number of players
+     */
     public int getMinPlayers() {
         return minPlayers;
     }
     
+    /**
+     * Gets the maximum number of players allowed.
+     * @return the maximum number of players
+     */
     public int getMaxPlayers() {
         return maxPlayers;
     }
     
+    /**
+     * Gets the minimum play time in minutes.
+     * @return the minimum play time
+     */
     public int getMinPlayTime() {
         return minPlayTime;
     }
     
+    /**
+     * Gets the maximum play time in minutes.
+     * @return the maximum play time
+     */
     public int getMaxPlayTime() {
         return maxPlayTime;
     }
     
+    /**
+     * Gets the rating of the game.
+     * @return the game rating
+     */
     public double getRating() {
         return rating;
     }
     
+    /**
+     * Gets the difficulty level of the game.
+     * @return the game difficulty
+     */
     public double getDifficulty() {
         return difficulty;
     }
@@ -81,3 +109,4 @@ public class Game extends BoardGame {
         return name.toLowerCase().hashCode();
     }
 } 
+

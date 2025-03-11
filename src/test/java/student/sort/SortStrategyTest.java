@@ -1,10 +1,10 @@
 package student.sort;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import student.Game;
 import java.util.Arrays;
 import java.util.List;
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class SortStrategyTest {
     private final Game game1 = new Game("Catan", 3, 4, 60, 4.5, 2.0);
@@ -33,8 +33,10 @@ public class SortStrategyTest {
         assertEquals(4.5, games.get(2).getRating(), 0.01);
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testInvalidSortString() {
-        SortStrategyFactory.createSortStrategy("invalid_sort");
+        assertThrows(IllegalArgumentException.class, () -> 
+            SortStrategyFactory.createSortStrategy("invalid_sort")
+        );
     }
 } 

@@ -8,6 +8,11 @@ import student.Operations;
  */
 public class FilterFactory {
     
+    // Add private constructor to prevent instantiation
+    private FilterFactory() {
+        // Utility class should not be instantiated
+    }
+    
     /**
      * Create a filter from a filter string.
      *
@@ -31,3 +36,4 @@ public class FilterFactory {
         };
     }
 } 
+// Add newline at end of file

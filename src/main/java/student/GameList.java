@@ -101,7 +101,7 @@ public class GameList implements IGameList {
         }
 
         if (str.equalsIgnoreCase(ADD_ALL)) {
-            filteredList.forEach(game -> addGame((Game)game));
+            filteredList.forEach(game -> addGame((Game) game));
             return;
         }
 
@@ -111,7 +111,7 @@ public class GameList implements IGameList {
                 if (index < 0 || index >= filteredList.size()) {
                     throw new IllegalArgumentException("Invalid index");
                 }
-                addGame((Game)filteredList.get(index));
+                addGame((Game) filteredList.get(index));
                 return;
             }
 
@@ -122,7 +122,7 @@ public class GameList implements IGameList {
                 if (start < 0 || end >= filteredList.size() || start > end) {
                     throw new IllegalArgumentException("Invalid range");
                 }
-                filteredList.subList(start, end + 1).forEach(game -> addGame((Game)game));
+                filteredList.subList(start, end + 1).forEach(game -> addGame((Game) game));
                 return;
             }
 
@@ -131,7 +131,7 @@ public class GameList implements IGameList {
                     .filter(g -> g.getName().equalsIgnoreCase(str))
                     .findFirst();
             if (game.isPresent()) {
-                addGame((Game)game.get());
+                addGame((Game) game.get());
             } else {
                 throw new IllegalArgumentException("Game not found");
             }
@@ -150,7 +150,9 @@ public class GameList implements IGameList {
         if (str.matches("\\d+")) {
             int index = Integer.parseInt(str) - 1;
             List<BoardGame> sortedGames = getSortedGames();
-            if (index < 0 || index >= sortedGames.size()) throw new IllegalArgumentException("Invalid index");
+            if (index < 0 || index >= sortedGames.size()) {
+                throw new IllegalArgumentException("Invalid index");
+            }
             games.remove(sortedGames.get(index));
             return;
         }
@@ -160,7 +162,9 @@ public class GameList implements IGameList {
             int start = Integer.parseInt(parts[0]) - 1;
             int end = Integer.parseInt(parts[1]) - 1;
             List<BoardGame> sortedGames = getSortedGames();
-            if (start < 0 || end >= sortedGames.size() || start > end) throw new IllegalArgumentException("Invalid range");
+            if (start < 0 || end >= sortedGames.size() || start > end) {
+                throw new IllegalArgumentException("Invalid range");
+            }
             games.removeAll(sortedGames.subList(start, end + 1));
             return;
         }

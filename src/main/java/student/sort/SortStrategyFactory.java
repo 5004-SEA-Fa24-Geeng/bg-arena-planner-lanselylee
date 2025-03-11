@@ -2,7 +2,13 @@ package student.sort;
 
 import student.GameData;
 
-public class SortStrategyFactory {
+// Make the class final and add private constructor since it's a utility class
+final class SortStrategyFactory {
+    // Add private constructor to prevent instantiation
+    private SortStrategyFactory() {
+        // Private constructor to prevent instantiation
+    }
+
     /**
      * Creates a sort strategy based on the sort string.
      * Format: "column:direction" (e.g., "name:asc", "rating:desc")

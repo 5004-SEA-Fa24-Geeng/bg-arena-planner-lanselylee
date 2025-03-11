@@ -9,10 +9,23 @@ import student.Operations;
  */
 public class NumberFilter extends Filter {
     
+    /**
+     * Constructs a new NumberFilter.
+     *
+     * @param column The game data column to filter on
+     * @param operator The operation to apply in the filter
+     * @param value The value to compare against
+     */
     public NumberFilter(GameData column, Operations operator, String value) {
         super(column, operator, value);
     }
 
+    /**
+     * Applies the filter to a game based on numeric values.
+     *
+     * @param game The game to filter
+     * @return true if the game matches the filter criteria, false otherwise
+     */
     @Override
     public boolean apply(Game game) {
         double gameValue = switch (column) {
