@@ -37,21 +37,22 @@ package student;
 public enum Operations {
 
     /** Operations to use. */
-    EQUALS("=="), NOT_EQUALS("!="), GREATER_THAN(">"), LESS_THAN("<"), GREATER_THAN_EQUALS(
-            ">="),
-    /** Operations to use. */
-    LESS_THAN_EQUALS("<="), CONTAINS("~=");
+    EQUALS("="),
+    GREATER_THAN(">"),
+    LESS_THAN("<"),
+    GREATER_THAN_EQUALS(">="),
+    LESS_THAN_EQUALS("<=");
 
     /** The operator. */
-    private final String operator;
+    private final String symbol;
 
     /**
      * Constructor for the operations.
      * 
-     * @param operator The operator.
+     * @param symbol The operator.
      */
-    Operations(String operator) {
-        this.operator = operator;
+    Operations(String symbol) {
+        this.symbol = symbol;
     }
 
     /**
@@ -60,7 +61,7 @@ public enum Operations {
      * @return The operator.
      */
     public String getOperator() {
-        return operator;
+        return symbol;
     }
 
     /**
@@ -86,21 +87,16 @@ public enum Operations {
      */
     public static Operations getOperatorFromStr(String str) {
         if (str.contains(">=")) {
-            return Operations.GREATER_THAN_EQUALS;
+            return GREATER_THAN_EQUALS;
         } else if (str.contains("<=")) {
-            return Operations.LESS_THAN_EQUALS;
+            return LESS_THAN_EQUALS;
         } else if (str.contains(">")) {
-            return Operations.GREATER_THAN;
+            return GREATER_THAN;
         } else if (str.contains("<")) {
-            return Operations.LESS_THAN;
-        } else if (str.contains("==")) {
-            return Operations.EQUALS;
-        } else if (str.contains("!=")) {
-            return Operations.NOT_EQUALS;
-        } else if (str.contains("~=")) {
-            return Operations.CONTAINS;
-        } else {
-            return null;
+            return LESS_THAN;
+        } else if (str.contains("=")) {
+            return EQUALS;
         }
+        throw new IllegalArgumentException("Invalid operator in filter string");
     }
 }

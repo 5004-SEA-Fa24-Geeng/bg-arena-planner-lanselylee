@@ -155,7 +155,10 @@ For the final design, you just need to do a single diagram that includes both th
 
 ## (FINAL DESIGN): Reflection/Retrospective
 
-> [!IMPORTANT]
-> The value of reflective writing has been highly researched and documented within computer science, from learning to information to showing higher salaries in the workplace. For this next part, we encourage you to take time, and truly focus on your retrospective.
+Wow, this project really taught me a lot! When I first started, I thought I had a pretty good plan with my initial design, but boy was I wrong about some things. The biggest "aha" moment came when I was struggling with all the filtering logic in my Planner class - it was getting super messy and hard to read. That's when I realized I needed to break things up and created a separate GameFilter class. It's funny how something can seem so obvious after you figure it out!
 
-Take time to reflect on how your design has changed. Write in *prose* (i.e. do not bullet point your answers - it matters in how our brain processes the information). Make sure to include what were some major changes, and why you made them. What did you learn from this process? What would you do differently next time? What was the most challenging part of this process? For most students, it will be a paragraph or two. 
+I also learned the hard way about choosing the right data structures. I started with Lists everywhere because, well, that's what I was comfortable with. But after running into issues with duplicate games and slow lookups, I switched to using Sets. It made such a big difference! The code became faster and simpler - definitely a lesson I won't forget.
+
+The hardest part? Definitely the filtering system. At first, I thought "Oh, I just need to split the string and check some conditions, easy!" But then I had to deal with things like "minPlayers>4,maxPlayers<6" and sorting options, and suddenly it wasn't so simple anymore. I spent a lot of time debugging edge cases I hadn't even thought about in my initial design.
+
+If I could do it all over again, I'd probably spend more time planning out how to handle all these different filter combinations before jumping into coding. But you know what? Sometimes you just have to start building something to realize what you actually need. This project really showed me that it's okay for your design to change as you go - that's just part of the learning process!
