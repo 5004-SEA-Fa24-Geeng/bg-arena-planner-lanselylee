@@ -86,8 +86,8 @@ public class Planner implements IPlanner {
                 }
 
                 // Handle numeric filters
-                if (filterLower.replaceAll("[^a-z]", "").matches(".*(minplayers|maxplayers|mintime|"
-                        + "maxtime|difficulty|rating|rank|year|id).*")) {
+                if (filterLower.replaceAll("[^a-z]", "").matches(".*(minplayers|maxplayers|minplaytime|"
+                        + "maxplaytime|difficulty|rating|rank|year|id).*")) {
                     // Extract the field name before the operator
                     String field = filterLower.split("[<>=!~]+")[0].replaceAll("[^a-z]", "").toLowerCase();
                     String operator;
@@ -119,8 +119,8 @@ public class Planner implements IPlanner {
                     double fieldValue = switch (field) {
                         case "minplayers" -> game.getMinPlayers();
                         case "maxplayers" -> game.getMaxPlayers();
-                        case "mintime" -> game.getMinPlayTime();
-                        case "maxtime" -> game.getMaxPlayTime();
+                        case "minplaytime" -> game.getMinPlayTime();
+                        case "maxplaytime" -> game.getMaxPlayTime();
                         case "difficulty" -> game.getDifficulty();
                         case "rating" -> game.getRating();
                         case "rank" -> game.getRank();
@@ -147,7 +147,7 @@ public class Planner implements IPlanner {
                 .collect(Collectors.joining(", ")));
         }
 
-        return filteredList.stream().sorted(comparator);
+        return filteredList.stream().sorted(Comparator.comparing(BoardGame::getName));
     }
 
     @Override

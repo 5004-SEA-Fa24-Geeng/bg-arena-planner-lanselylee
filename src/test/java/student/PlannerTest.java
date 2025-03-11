@@ -113,4 +113,27 @@ public class PlannerTest {
         expectedNames = Set.of("GoRami", "Monopoly", "Tucano");
         assertEquals(expectedNames, actualNames);
     }
+
+    @Test
+    public void testFilterMinPlayTime() {
+        IPlanner planner = new Planner(games);
+        
+        // Test greater than for minPlayTime
+        List<BoardGame> filtered = planner.filter("minPlayTime>30").toList();
+        assertEquals(4, filtered.size());
+        
+        // Convert to set of names for easier comparison
+        Set<String> actualNames = filtered.stream()
+            .map(BoardGame::getName)
+            .collect(Collectors.toSet());
+        
+        Set<String> expectedNames = Set.of("17 days", "golang", "GoRami", "Tucano");
+        assertEquals(expectedNames, actualNames);
+        
+        // Test the output is sorted by name by default
+        List<String> sortedNames = filtered.stream()
+            .map(BoardGame::getName)
+            .collect(Collectors.toList());
+        assertEquals(List.of("17 days", "GoRami", "Tucano", "golang"), sortedNames);
+    }
 }
