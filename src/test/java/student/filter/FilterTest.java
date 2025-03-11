@@ -10,9 +10,24 @@ class FilterTest {
 
     // Concrete implementation of Filter for testing
     private static class TestFilter extends Filter {
+        /** The column to filter on. */
+        private final GameData column;
+        /** The operator to apply. */
+        private final Operations operator;
+        /** The value to compare against. */
+        private final String value;
+
         public TestFilter(GameData column, Operations operator, String value) {
             super(column, operator, value);
+            this.column = column;
+            this.operator = operator;
+            this.value = value;
         }
+
+        // Getter methods
+        private GameData getColumn() { return column; }
+        private Operations getOperator() { return operator; }
+        private String getValue() { return value; }
 
         @Override
         public boolean apply(Game game) {
