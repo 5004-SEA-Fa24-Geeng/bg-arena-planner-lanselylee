@@ -8,8 +8,14 @@ import java.util.Set;
 import java.util.stream.Stream;
 
 public class Planner implements IPlanner {
+    /** List containing all board games available for filtering. */
     private final List<BoardGame> allGames;
 
+    /**
+     * Constructs a new Planner with the given set of board games.
+     *
+     * @param games the set of board games to be managed by this planner
+     */
     public Planner(Set<BoardGame> games) {
         this.allGames = new ArrayList<>(games);
     }
@@ -25,7 +31,7 @@ public class Planner implements IPlanner {
             return allGames.stream();
         }
         return allGames.stream()
-                .filter(game -> FilterFactory.createFilter(filter).apply((Game)game));
+                .filter(game -> FilterFactory.createFilter(filter).apply((Game) game));
     }
 
     @Override

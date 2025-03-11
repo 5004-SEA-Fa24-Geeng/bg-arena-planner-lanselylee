@@ -8,13 +8,23 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class GameList implements IGameList {
+    /** List of board games stored in this collection */
     private List<BoardGame> games;
+    /** Constant representing the "all" command for adding/removing games */
     public static final String ADD_ALL = "all";
 
+    /**
+     * Constructs a new empty GameList.
+     */
     public GameList() {
         this.games = new ArrayList<>();
     }
 
+    /**
+     * Adds a game to the list if it's a BoardGame and not already present.
+     * @param game The game to add
+     * @return true if the game was added successfully, false otherwise
+     */
     public boolean addGame(Game game) {
         if (!(game instanceof BoardGame)) {
             return false;
@@ -23,10 +33,20 @@ public class GameList implements IGameList {
         return !games.contains(boardGame) && games.add(boardGame);
     }
 
+    /**
+     * Removes a game from the list.
+     * @param game The game to remove
+     * @return true if the game was removed successfully, false otherwise
+     */
     public boolean removeGame(Game game) {
         return games.remove(game);
     }
 
+    /**
+     * Checks if a game is present in the list.
+     * @param game The game to check
+     * @return true if the game is in the list, false otherwise
+     */
     public boolean contains(Game game) {
         if (!(game instanceof BoardGame)) {
             return false;
@@ -35,6 +55,10 @@ public class GameList implements IGameList {
         return games.contains(boardGame);
     }
 
+    /**
+     * Returns the number of games in the list.
+     * @return The size of the game list
+     */
     public int size() {
         return games.size();
     }
@@ -150,6 +174,11 @@ public class GameList implements IGameList {
                 .collect(Collectors.toList());
     }
 
+    /**
+     * Gets game information in a formatted string.
+     * @param name The name of the game to get information for
+     * @return A formatted string containing game information, or null if game not found
+     */
     public String getGameInfo(String name) {
         return games.stream()
                 .filter(g -> g.getName().equalsIgnoreCase(name))
@@ -159,6 +188,11 @@ public class GameList implements IGameList {
                 .orElse(null);
     }
 
+    /**
+     * Gets a list of games matching the specified name.
+     * @param name The name to search for
+     * @return List of games matching the name
+     */
     public List<Game> getGamesByName(String name) {
         return games.stream()
             .filter(game -> game.getName().equals(name))

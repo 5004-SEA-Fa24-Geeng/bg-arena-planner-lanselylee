@@ -12,6 +12,7 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
  * through getters.
  */
 public class BoardGame {
+
     /** Name of the board game. */
     private final String name;
     /** Unique identifier of the board game. */

@@ -36,11 +36,15 @@ package student;
  */
 public enum Operations {
 
-    /** Operations to use. */
+    /** Represents equality comparison operation (=). */
     EQUALS("="),
+    /** Represents greater than comparison operation (>). */
     GREATER_THAN(">"),
+    /** Represents less than comparison operation (<). */
     LESS_THAN("<"),
+    /** Represents greater than or equal to comparison operation (>=). */
     GREATER_THAN_EQUALS(">="),
+    /** Represents less than or equal to comparison operation (<=). */
     LESS_THAN_EQUALS("<=");
 
     /** The operator. */
