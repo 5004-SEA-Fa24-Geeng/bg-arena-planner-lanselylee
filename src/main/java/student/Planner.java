@@ -45,10 +45,10 @@ public class Planner implements IPlanner {
     public Stream<BoardGame> filter(String filter, GameData sortOn, boolean ascending) {
         if (filter == null || filter.trim().isEmpty()) {
             return allGames.stream()
-                    .sorted((g1, g2) -> g1.getName().compareToIgnoreCase(g2.getName())); // Ensuring sorted order
+                    .sorted((g1, g2) -> g1.getName().compareToIgnoreCase(g2.getName()));
         }
 
-        System.out.println("Filtering with: " + filter); // Debugging line
+        System.out.println("Filtering with: " + filter);
 
         // Check for name contains operation (e.g., "name~=Go")
         if (filter.contains("~=")) {
@@ -57,18 +57,33 @@ public class Planner implements IPlanner {
                 String columnName = parts[0].trim();
                 String value = parts[1].trim();
 
-                // Ensure the filter applies to game names
                 if (columnName.equalsIgnoreCase("name")) {
                     return allGames.stream()
                             .filter(game -> game.getName().toLowerCase().contains(value.toLowerCase()))
-                            .sorted((g1, g2) -> g1.getName().compareToIgnoreCase(g2.getName())); // Sorting alphabetically
+                            .sorted((g1, g2) -> g1.getName().compareToIgnoreCase(g2.getName()));
+                }
+            }
+        }
+        
+        // Check for name equals operation (e.g., "name==Go")
+        if (filter.contains("==")) {
+            String[] parts = filter.split("==");
+            if (parts.length == 2) {
+                String columnName = parts[0].trim();
+                String value = parts[1].trim();
+
+                if (columnName.equalsIgnoreCase("name")) {
+                    return allGames.stream()
+                            .filter(game -> game.getName().equalsIgnoreCase(value))
+                            .sorted((g1, g2) -> g1.getName().compareToIgnoreCase(g2.getName()));
                 }
             }
         }
 
+        // Default case: treat the filter as a simple name contains search
         return allGames.stream()
                 .filter(game -> game.getName().toLowerCase().contains(filter.toLowerCase()))
-                .sorted((g1, g2) -> g1.getName().compareToIgnoreCase(g2.getName())); // Ensuring sorted order
+                .sorted((g1, g2) -> g1.getName().compareToIgnoreCase(g2.getName()));
     }
 
     /**
