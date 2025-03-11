@@ -78,7 +78,6 @@ public class Planner implements IPlanner {
                         return gameName.toLowerCase().contains(value.toLowerCase());
                     } else if (filterLower.contains(">")) {
                         String value = filterStr.substring(filterStr.indexOf(">") + 1).trim();
-                        System.out.println("Comparing '" + gameName + "' with '" + value + "': " + gameName.compareToIgnoreCase(value));
                         return gameName.compareToIgnoreCase(value) > 0;
                     } else if (filterLower.contains("<")) {
                         String value = filterStr.substring(filterStr.indexOf("<") + 1).trim();
@@ -87,7 +86,9 @@ public class Planner implements IPlanner {
                 }
 
                 // Handle numeric filters
-                if (filterLower.matches("(min_players|max_players|min_time|max_time|difficulty|rating|rank|year|id).*")) {
+                if (filterLower.matches(
+                        "(min_players|max_players|min_time|max_time|"
+                        + "difficulty|rating|rank|year|id).*")) {
                     String operator;
                     String value;
                     
