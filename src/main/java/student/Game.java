@@ -1,6 +1,6 @@
 package student;
 
-public class Game extends BoardGame {
+public class Game {
     /** The name of the game. */
     private final String name;
     /** The minimum number of players required. */
@@ -26,7 +26,6 @@ public class Game extends BoardGame {
      * @param difficulty Game difficulty level
      */
     public Game(String name, int minPlayers, int maxPlayers, int playTime, double rating, double difficulty) {
-        super(name, 0, minPlayers, maxPlayers, playTime, playTime, difficulty, 0, rating, 2024);
         this.name = name;
         this.minPlayers = minPlayers;
         this.maxPlayers = maxPlayers;
