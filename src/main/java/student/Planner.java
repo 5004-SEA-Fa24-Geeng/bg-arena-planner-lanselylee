@@ -5,58 +5,23 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Stream;
-import java.util.stream.Collectors;
 
-/**
- * The Planner class is responsible for filtering and sorting board games based on user-defined criteria.
- * Implements the IPlanner interface.
- */
 public class Planner implements IPlanner {
-    /** List containing all board games available for filtering. */
     private final List<BoardGame> allGames;
-    /** List that stores currently filtered games. */
     private List<BoardGame> filteredGames;
 
-    /**
-     * Constructs a new Planner with the given set of board games.
-     *
-     * @param games The set of board games to be managed by this planner.
-     */
     public Planner(Set<BoardGame> games) {
         this.allGames = new ArrayList<>(games);
         this.filteredGames = new ArrayList<>(games);
-        System.out.println("Planner initialized with " + allGames.size() + " games.");
     }
 
-    /**
-     * Filters the board games based on the provided filter string, using the default sorting method (by name).
-     *
-     * @param filter The filter condition in string format.
-     * @return A stream of board games that match the given filter.
-     */
     @Override
     public Stream<BoardGame> filter(String filter) {
         return filter(filter, GameData.NAME, true);
     }
 
-    /**
-     * Filters the board games based on the given filter and sorting criteria.
-     *
-     * @param filter    The filter condition in string format.
-     * @param sortOn    The column to sort the results on.
-     * @param ascending Whether to sort in ascending order.
-     * @return A stream of board games that match the given filter and sorting criteria.
-     */
     @Override
     public Stream<BoardGame> filter(String filter, GameData sortOn, boolean ascending) {
-        // Add debug logging at the start
-        System.out.println("DEBUG - All games in planner:");
-        allGames.forEach(game -> System.out.println("Game: " + game.getName()));
-        
-        System.out.println("Filtering games with filter: '" + filter + "', sorting by: " + sortOn + ", ascending: " + ascending);
-        System.out.println("Total games before filtering: " + filteredGames.size());
-
-        // Define sorting logic based on sortOn parameter
         Comparator<BoardGame> comparator = switch (sortOn) {
             case NAME -> Comparator.comparing(BoardGame::getName, String.CASE_INSENSITIVE_ORDER);
             case RATING -> Comparator.comparing(BoardGame::getRating);
@@ -74,88 +39,56 @@ public class Planner implements IPlanner {
             comparator = comparator.reversed();
         }
 
-        // If no filter is applied, return all sorted games
         if (filter == null || filter.trim().isEmpty()) {
-            System.out.println("No filter provided, returning all games sorted.");
-            return filteredGames.stream().sorted(comparator);
+            return allGames.stream().sorted(comparator);
         }
 
         String[] filters = filter.split(",");
-        Stream<BoardGame> filtered = filteredGames.stream();
-        
+        Stream<BoardGame> filtered = allGames.stream();
+
         for (String f : filters) {
             String filterStr = f.trim();
-            System.out.println("Processing filter: " + filterStr);
+            String filterLower = filterStr.toLowerCase();
 
             filtered = filtered.filter(game -> {
-                String gameName = game.getName();
-                
-                // Handle exact match (name==)
-                if (filterStr.toLowerCase().matches("\\s*name\\s*==.*")) {
-                    String value = filterStr.toLowerCase().replaceAll("\\s*name\\s*==\\s*", "").trim();
-                    return gameName.toLowerCase().equals(value);
-                } 
-                // Handle substring match (name~=)
-                else if (filterStr.toLowerCase().startsWith("name~=") || filterStr.toLowerCase().startsWith("name ~=")) {
-                    String value = filterStr.toLowerCase().replaceAll("name\\s*~=\\s*", "").trim();
-                    return gameName.toLowerCase().contains(value);
-                }
-                // Handle greater than (name>)
-                else if (filterStr.toLowerCase().startsWith("name>") || filterStr.toLowerCase().startsWith("name >")) {
-                    String value = filterStr.toLowerCase().replaceAll("name\\s*>\\s*", "").trim();
-                    return gameName.compareToIgnoreCase(value) > 0;
-                }
-                // Handle less than (name<)
-                else if (filterStr.toLowerCase().startsWith("name<")) {
-                    String value = filterStr.substring(5).trim();
-                    return gameName.compareToIgnoreCase(value) < 0 && !gameName.equalsIgnoreCase(value);
-                }
-                // Handle greater than or equal (name>=)
-                else if (filterStr.toLowerCase().startsWith("name>=") || filterStr.toLowerCase().startsWith("name >=")) {
-                    String value = filterStr.toLowerCase().replaceAll("name\\s*>=\\s*", "").trim();
-                    int comparison = gameName.compareToIgnoreCase(value);
-                    return comparison >= 0;
-                }
-                // Handle less than or equal (name<=)
-                else if (filterStr.toLowerCase().startsWith("name<=")) {
-                    String value = filterStr.substring(6).trim();
-                    return gameName.compareToIgnoreCase(value) <= 0;
-                }
-                // Handle not equal (name!=)
-                else if (filterStr.toLowerCase().startsWith("name!=")) {
-                    String value = filterStr.substring(6).trim();
-                    return !gameName.equalsIgnoreCase(value);
+                String currentGameName = game.getName();
+
+                if (filterLower.matches("\\s*name\\s*==.*")) {
+                    String value = filterStr.substring(filterStr.indexOf('=') + 2).trim();
+                    return currentGameName.equalsIgnoreCase(value);
+                } else if (filterLower.matches("\\s*name\\s*~=.*")) {
+                    String value = filterStr.substring(filterStr.indexOf('=') + 2).trim().toLowerCase();
+                    return currentGameName.toLowerCase().contains(value);
+                } else if (filterLower.matches("\\s*name\\s*>=.*")) {
+                    String value = filterStr.substring(filterStr.indexOf('=') + 1).trim();
+                    return currentGameName.compareToIgnoreCase(value) >= 0;
+                } else if (filterLower.matches("\\s*name\\s*<=.*")) {
+                    String value = filterStr.substring(filterStr.indexOf('=') + 1).trim();
+                    return currentGameName.compareToIgnoreCase(value) <= 0;
+                } else if (filterLower.matches("\\s*name\\s*>.*")) {
+                    String value = filterStr.substring(filterStr.indexOf('>') + 1).trim();
+                    return currentGameName.compareToIgnoreCase(value) > 0;
+                } else if (filterLower.matches("\\s*name\\s*<.*")) {
+                    String value = filterStr.substring(filterStr.indexOf('<') + 1).trim();
+                    return currentGameName.compareToIgnoreCase(value) < 0;
+                } else if (filterLower.matches("\\s*name\\s*!=.*")) {
+                    String value = filterStr.substring(filterStr.indexOf('=') + 1).trim();
+                    return !currentGameName.equalsIgnoreCase(value);
                 }
                 return false;
             });
         }
 
-        List<BoardGame> finalList = filtered.sorted(comparator).toList();
-        System.out.println("Games after filtering: " + finalList.stream()
-            .map(g -> "'" + g.getName() + "'")
-            .collect(Collectors.joining(", ")));
-        return finalList.stream();
+        return filtered.sorted(comparator);
     }
 
-    /**
-     * Filters the board games using the given filter and sorts them based on the specified column.
-     *
-     * @param filter The filter condition in string format.
-     * @param sortOn The column to sort the results on.
-     * @return A stream of board games that match the filter.
-     */
     @Override
     public Stream<BoardGame> filter(String filter, GameData sortOn) {
         return filter(filter, sortOn, true);
     }
 
-    /**
-     * Resets the filter by restoring the filtered list to the original game list.
-     */
     @Override
     public void reset() {
-        System.out.println("Resetting filteredGames to allGames. Total games: " + allGames.size());
         this.filteredGames = new ArrayList<>(allGames);
     }
 }
-
