@@ -59,20 +59,21 @@ public class Planner implements IPlanner {
 
         System.out.println("Filtering with: " + filter);
 
-        Stream<BoardGame> filtered = filteredGames.stream();
+        // Parse filter into components
+        String normalizedFilter = filter.toLowerCase().replace("_", "");
         
-        // Apply filters based on prefix, using case-insensitive, flexible matching
-        String lowerFilter = filter.toLowerCase().replace("_", "");
-        if (lowerFilter.startsWith("minplayers")) {
-            filtered = handleMinPlayersFilter(filter, filtered);
-        } else if (lowerFilter.startsWith("name")) {
-            filtered = handleNameFilter(filter, filtered);
+        // Determine filter type and apply appropriate filter
+        Stream<BoardGame> filtered;
+        if (normalizedFilter.startsWith("minplayers")) {
+            filtered = handleMinPlayersFilter(filter, filteredGames.stream());
+        } else if (normalizedFilter.startsWith("name")) {
+            filtered = handleNameFilter(filter, filteredGames.stream());
         } else {
-            // If no known filter type matches, treat as default contains filter
-            filtered = filtered.filter(game -> 
-                game.getName().toLowerCase().contains(filter.toLowerCase()));
+            // If filter doesn't match known patterns, return empty stream
+            return Stream.empty();
         }
 
+        // Apply sorting to filtered results
         return filtered.sorted(comparator);
     }
 
