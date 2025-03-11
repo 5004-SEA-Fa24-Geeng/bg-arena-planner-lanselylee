@@ -152,6 +152,19 @@ public class Planner implements IPlanner {
             }
         }
 
+        // Handle not equal (name!=value)
+        if (filter.contains("!=")) {
+            parts = filter.split("!=");
+            if (parts.length == 2) {
+                value = parts[1].trim().replaceAll("\"", "");
+                return filteredGames.stream()
+                        .filter(game -> !game.getName().equalsIgnoreCase(value))
+                        .sorted((g1, g2) -> ascending
+                                ? g1.getName().compareToIgnoreCase(g2.getName())
+                                : g2.getName().compareToIgnoreCase(g1.getName()));
+            }
+        }
+
         // Default: return empty stream for unrecognized filters
         return Stream.empty();
     }
