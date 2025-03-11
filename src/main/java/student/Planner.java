@@ -49,54 +49,61 @@ public class Planner implements IPlanner {
             String filterLower = filterStr.toLowerCase();
 
             filteredList = filteredList.stream().filter(game -> {
-                // Extract operator and value first
-                String operator = null;
-                String value = null;
-                
-                if (filterLower.contains("==")) {
-                    operator = "==";
-                    value = filterStr.substring(filterStr.indexOf("==") + 2).trim();
-                } else if (filterLower.contains("~=")) {
-                    operator = "~=";
-                    value = filterStr.substring(filterStr.indexOf("~=") + 2).trim();
-                } else if (filterLower.contains(">=")) {
-                    operator = ">=";
-                    value = filterStr.substring(filterStr.indexOf(">=") + 2).trim();
-                } else if (filterLower.contains(">")) {
-                    operator = ">";
-                    value = filterStr.substring(filterStr.indexOf(">") + 1).trim();
-                } else if (filterLower.contains("<=")) {
-                    operator = "<=";
-                    value = filterStr.substring(filterStr.indexOf("<=") + 2).trim();
-                } else if (filterLower.contains("<")) {
-                    operator = "<";
-                    value = filterStr.substring(filterStr.indexOf("<") + 1).trim();
-                } else if (filterLower.contains("!=")) {
-                    operator = "!=";
-                    value = filterStr.substring(filterStr.indexOf("!=") + 2).trim();
-                }
-
-                if (operator == null || value == null) {
-                    return false;  // Invalid filter, exclude the game
-                }
-
-                // Handle name filters
                 if (filterLower.startsWith("name")) {
                     String gameName = game.getName();
-                    return switch (operator) {
-                        case "==" -> gameName.equalsIgnoreCase(value);
-                        case "~=" -> gameName.toLowerCase().contains(value.toLowerCase());
-                        case ">=" -> gameName.compareToIgnoreCase(value) >= 0;
-                        case ">" -> gameName.compareToIgnoreCase(value) > 0;
-                        case "<=" -> gameName.compareToIgnoreCase(value) <= 0;
-                        case "<" -> gameName.compareToIgnoreCase(value) < 0;
-                        case "!=" -> !gameName.equalsIgnoreCase(value);
-                        default -> false;
-                    };
+                    
+                    // Handle name operators in order of length (longest first)
+                    if (filterLower.contains(">=")) {
+                        String value = filterStr.substring(filterStr.indexOf(">=") + 2).trim();
+                        return gameName.compareToIgnoreCase(value) >= 0;
+                    } else if (filterLower.contains("<=")) {
+                        String value = filterStr.substring(filterStr.indexOf("<=") + 2).trim();
+                        return gameName.compareToIgnoreCase(value) <= 0;
+                    } else if (filterLower.contains("==")) {
+                        String value = filterStr.substring(filterStr.indexOf("==") + 2).trim();
+                        return gameName.equalsIgnoreCase(value);
+                    } else if (filterLower.contains("!=")) {
+                        String value = filterStr.substring(filterStr.indexOf("!=") + 2).trim();
+                        return !gameName.equalsIgnoreCase(value);
+                    } else if (filterLower.contains("~=")) {
+                        String value = filterStr.substring(filterStr.indexOf("~=") + 2).trim();
+                        return gameName.toLowerCase().contains(value.toLowerCase());
+                    } else if (filterLower.contains(">")) {
+                        String value = filterStr.substring(filterStr.indexOf(">") + 1).trim();
+                        return gameName.compareToIgnoreCase(value) > 0;
+                    } else if (filterLower.contains("<")) {
+                        String value = filterStr.substring(filterStr.indexOf("<") + 1).trim();
+                        return gameName.compareToIgnoreCase(value) < 0;
+                    }
                 }
 
                 // Handle numeric filters
                 if (filterLower.matches("(min_players|max_players|min_time|max_time|difficulty|rating|rank|year|id).*")) {
+                    String operator;
+                    String value;
+                    
+                    if (filterLower.contains("==")) {
+                        operator = "==";
+                        value = filterStr.substring(filterStr.indexOf("==") + 2).trim();
+                    } else if (filterLower.contains(">=")) {
+                        operator = ">=";
+                        value = filterStr.substring(filterStr.indexOf(">=") + 2).trim();
+                    } else if (filterLower.contains(">")) {
+                        operator = ">";
+                        value = filterStr.substring(filterStr.indexOf(">") + 1).trim();
+                    } else if (filterLower.contains("<=")) {
+                        operator = "<=";
+                        value = filterStr.substring(filterStr.indexOf("<=") + 2).trim();
+                    } else if (filterLower.contains("<")) {
+                        operator = "<";
+                        value = filterStr.substring(filterStr.indexOf("<") + 1).trim();
+                    } else if (filterLower.contains("!=")) {
+                        operator = "!=";
+                        value = filterStr.substring(filterStr.indexOf("!=") + 2).trim();
+                    } else {
+                        return false;
+                    }
+
                     String field = filterLower.split("[^a-z_]")[0];
                     double numericValue = Double.parseDouble(value);
                     double fieldValue = switch (field) {
@@ -111,6 +118,7 @@ public class Planner implements IPlanner {
                         case "id" -> game.getId();
                         default -> 0;
                     };
+
                     return switch (operator) {
                         case ">" -> fieldValue > numericValue;
                         case "<" -> fieldValue < numericValue;
