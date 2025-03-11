@@ -94,38 +94,32 @@ public class Planner implements IPlanner {
                 if (filterStr.toLowerCase().startsWith("name==") || filterStr.toLowerCase().startsWith("name ==")) {
                     value = filterStr.toLowerCase().replaceAll("name\\s*==\\s*", "").trim();
                     return gameName.equals(value);
-                } 
-                // Handle substring match (name~=)
-                else if (filterStr.toLowerCase().startsWith("name~=") || filterStr.toLowerCase().startsWith("name ~=")) {
+                } else if (filterStr.toLowerCase().startsWith("name~=") || filterStr.toLowerCase().startsWith("name ~=")) {
+                    // Handle substring match (name~=)
                     value = filterStr.toLowerCase().replaceAll("name\\s*~=\\s*", "").trim();
                     return gameName.contains(value);
-                }
-                // Handle greater than or equal (name>=)
-                else if (filterStr.toLowerCase().startsWith("name>=") || filterStr.toLowerCase().startsWith("name >=")) {
+                } else if (filterStr.toLowerCase().startsWith("name>=") || filterStr.toLowerCase().startsWith("name >=")) {
+                    // Handle greater than or equal
                     value = filterStr.toLowerCase().replaceAll("name\\s*>=\\s*", "").trim();
                     return gameName.compareToIgnoreCase(value) >= 0;
-                }
-                // Handle greater than (name>)
-                else if (filterStr.toLowerCase().startsWith("name>") || filterStr.toLowerCase().startsWith("name >")) {
+                } else if (filterStr.toLowerCase().startsWith("name>") || filterStr.toLowerCase().startsWith("name >")) {
+                    // Handle greater than
                     value = filterStr.toLowerCase().replaceAll("name\\s*>\\s*", "").trim();
                     return gameName.compareToIgnoreCase(value) > 0;
-                }
-                // Handle less than or equal (name<=)
-                else if (filterStr.toLowerCase().startsWith("name<=") || filterStr.toLowerCase().startsWith("name <=")) {
+                } else if (filterStr.toLowerCase().startsWith("name<=") || filterStr.toLowerCase().startsWith("name <=")) {
+                    // Handle less than or equal
                     value = filterStr.toLowerCase().replaceAll("name\\s*<=\\s*", "").trim();
                     return gameName.compareToIgnoreCase(value) <= 0;
-                }
-                // Handle less than (name<)
-                else if (filterStr.toLowerCase().startsWith("name<") || filterStr.toLowerCase().startsWith("name <")) {
+                } else if (filterStr.toLowerCase().startsWith("name<") || filterStr.toLowerCase().startsWith("name <")) {
+                    // Handle less than
                     value = filterStr.toLowerCase().replaceAll("name\\s*<\\s*", "").trim();
                     return gameName.compareToIgnoreCase(value) < 0;
-                }
-                // Handle not equal (name!=)
-                else if (filterStr.toLowerCase().startsWith("name!=") || filterStr.toLowerCase().startsWith("name !=")) {
+                } else if (filterStr.toLowerCase().startsWith("name!=") || filterStr.toLowerCase().startsWith("name !=")) {
+                    // Handle not equal
                     value = filterStr.toLowerCase().replaceAll("name\\s*!=\\s*", "").trim();
                     return !gameName.equals(value);
                 }
-                // If no filter matches, include the game (changed from false to true)
+                // If no filter matches, include the game
                 return true;
             });
         }
