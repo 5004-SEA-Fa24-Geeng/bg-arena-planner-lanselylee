@@ -63,9 +63,8 @@ public class Planner implements IPlanner {
                     return game.getName().compareToIgnoreCase(value) <= 0;
                 } else if (filterLower.matches("\\s*name\\s*>.*")) {
                     String value = filterStr.substring(filterStr.indexOf(">") + 1).trim();
-                    int comparison = game.getName().compareToIgnoreCase(value);
-                    System.out.println("Comparing '" + game.getName() + "' with '" + value + "': " + comparison);
-                    return comparison > 0;
+                    String gameName = game.getName();
+                    return gameName.compareToIgnoreCase(value) > 0 && !gameName.equalsIgnoreCase(value);
                 } else if (filterLower.matches("\\s*name\\s*<.*")) {
                     String value = filterStr.substring(filterStr.indexOf("<") + 1).trim();
                     return game.getName().compareToIgnoreCase(value) < 0;
