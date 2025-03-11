@@ -5,6 +5,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Stream;
+import java.util.stream.Collectors;
 
 public class Planner implements IPlanner {
     private final List<BoardGame> allGames;
@@ -47,6 +48,7 @@ public class Planner implements IPlanner {
         for (String f : filters) {
             String filterStr = f.trim();
             String filterLower = filterStr.toLowerCase();
+            System.out.println("Processing filter: " + filterStr);
 
             filteredList = filteredList.stream().filter(game -> {
                 if (filterLower.startsWith("name")) {
@@ -70,6 +72,7 @@ public class Planner implements IPlanner {
                         return gameName.toLowerCase().contains(value.toLowerCase());
                     } else if (filterLower.contains(">")) {
                         String value = filterStr.substring(filterStr.indexOf(">") + 1).trim();
+                        System.out.println("Comparing '" + gameName + "' with '" + value + "': " + gameName.compareToIgnoreCase(value));
                         return gameName.compareToIgnoreCase(value) > 0;
                     } else if (filterLower.contains("<")) {
                         String value = filterStr.substring(filterStr.indexOf("<") + 1).trim();
@@ -132,6 +135,9 @@ public class Planner implements IPlanner {
 
                 return false;  // If we don't recognize the filter type, exclude the game
             }).toList();
+            System.out.println("Filtered list: " + filteredList.stream()
+                .map(BoardGame::getName)
+                .collect(Collectors.joining(", ")));
         }
 
         return filteredList.stream().sorted(comparator);
