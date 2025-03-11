@@ -133,4 +133,39 @@ public class PlannerTest {
         // Verify the actual minPlayTime values
         assertTrue(filtered.stream().allMatch(game -> game.getMinPlayTime() > 30));
     }
+
+    @Test
+    public void testFilterYear() {
+        IPlanner planner = new Planner(games);
+        
+        // Test greater than for year
+        List<BoardGame> filtered = planner.filter("yearPublished>2005").toList();
+        assertEquals(2, filtered.size());
+        
+        // Convert to set of names for easier comparison
+        Set<String> actualNames = filtered.stream()
+            .map(BoardGame::getName)
+            .collect(Collectors.toSet());
+        
+        Set<String> expectedNames = Set.of("Chess", "Monopoly");
+        assertEquals(expectedNames, actualNames);
+        
+        // Test less than for year
+        filtered = planner.filter("yearPublished<2002").toList();
+        actualNames = filtered.stream()
+            .map(BoardGame::getName)
+            .collect(Collectors.toSet());
+        
+        expectedNames = Set.of("Go", "Go Fish");
+        assertEquals(expectedNames, actualNames);
+        
+        // Test equals for year
+        filtered = planner.filter("yearPublished==2003").toList();
+        actualNames = filtered.stream()
+            .map(BoardGame::getName)
+            .collect(Collectors.toSet());
+        
+        expectedNames = Set.of("golang");
+        assertEquals(expectedNames, actualNames);
+    }
 }
