@@ -12,6 +12,8 @@ import java.util.stream.Stream;
 public class Planner implements IPlanner {
     /** List containing all board games available for filtering. */
     private final List<BoardGame> allGames;
+    /** List that stores currently filtered games */
+    private List<BoardGame> filteredGames;
 
     /**
      * Constructs a new Planner with the given set of board games.
@@ -20,6 +22,7 @@ public class Planner implements IPlanner {
      */
     public Planner(Set<BoardGame> games) {
         this.allGames = new ArrayList<>(games);
+        this.filteredGames = new ArrayList<>(games); // Ensure filtered list starts with all games
     }
 
     /**
@@ -44,120 +47,48 @@ public class Planner implements IPlanner {
     @Override
     public Stream<BoardGame> filter(String filter, GameData sortOn, boolean ascending) {
         if (filter == null || filter.trim().isEmpty()) {
-            return allGames.stream()
+            return filteredGames.stream()
                     .sorted((g1, g2) -> g1.getName().compareToIgnoreCase(g2.getName()));
         }
 
-        System.out.println("Filtering with: " + filter);
+        System.out.println("Filtering with: " + filter); // Debugging line
 
-        // Check for name equals operation (e.g., "name==Go")
+        // Handle "name==" for exact match
         if (filter.contains("==")) {
-            String[] parts = filter.split("==");
-            if (parts.length == 2) {
-                String columnName = parts[0].trim();
-                String value = parts[1].trim().replaceAll("\"", "");
-
-                if (columnName.equalsIgnoreCase("name")) {
-                    return allGames.stream()
-                            .filter(game -> game.getName().equalsIgnoreCase(value))
-                            .sorted((g1, g2) -> ascending 
-                                ? g1.getName().compareToIgnoreCase(g2.getName())
-                                : g2.getName().compareToIgnoreCase(g1.getName()));
-                }
-            }
+            return applyStringFilter(filter, "==", (gameName, value) -> gameName.equalsIgnoreCase(value), ascending);
         }
 
-        // Check for name contains operation (e.g., "name~=Go")
+        // Handle "name~=" for partial match
         if (filter.contains("~=")) {
-            String[] parts = filter.split("~=");
-            if (parts.length == 2) {
-                String columnName = parts[0].trim();
-                String value = parts[1].trim().replaceAll("\"", "");
-
-                if (columnName.equalsIgnoreCase("name")) {
-                    return allGames.stream()
-                            .filter(game -> game.getName().toLowerCase().contains(value.toLowerCase()))
-                            .sorted((g1, g2) -> ascending 
-                                ? g1.getName().compareToIgnoreCase(g2.getName())
-                                : g2.getName().compareToIgnoreCase(g1.getName()));
-                }
-            }
-        }
-        
-        // Check for less than operation (e.g., "name<Go")
-        if (filter.contains("<")) {
-            String[] parts = filter.split("<");
-            if (parts.length == 2) {
-                String columnName = parts[0].trim();
-                String value = parts[1].trim().replaceAll("\"", "");
-
-                if (columnName.equalsIgnoreCase("name")) {
-                    return allGames.stream()
-                            .filter(game -> game.getName().compareToIgnoreCase(value) < 0)
-                            .sorted((g1, g2) -> ascending 
-                                ? g1.getName().compareToIgnoreCase(g2.getName())
-                                : g2.getName().compareToIgnoreCase(g1.getName()));
-                }
-            }
+            return applyStringFilter(filter, "~=", (gameName, value) -> gameName.toLowerCase().contains(value.toLowerCase()), ascending);
         }
 
-        // Check for less than or equal operation (e.g., "name<=Go")
-        if (filter.contains("<=")) {
-            String[] parts = filter.split("<=");
-            if (parts.length == 2) {
-                String columnName = parts[0].trim();
-                String value = parts[1].trim().replaceAll("\"", "");
-
-                if (columnName.equalsIgnoreCase("name")) {
-                    return allGames.stream()
-                            .filter(game -> game.getName().compareToIgnoreCase(value) <= 0)
-                            .sorted((g1, g2) -> ascending 
-                                ? g1.getName().compareToIgnoreCase(g2.getName())
-                                : g2.getName().compareToIgnoreCase(g1.getName()));
-                }
-            }
+        // Handle "name>" for lexicographically greater than match
+        if (filter.contains(">") && !filter.contains(">=")) { // Ensure it's only ">"
+            return applyStringFilter(filter, ">", (gameName, value) -> gameName.compareToIgnoreCase(value) > 0, ascending);
         }
 
-        // Check for greater than or equal operation (e.g., "name>=Go")
+        // Handle "name>=" for greater than or equal match
         if (filter.contains(">=")) {
-            String[] parts = filter.split(">=");
-            if (parts.length == 2) {
-                String columnName = parts[0].trim();
-                String value = parts[1].trim().replaceAll("\"", "");
-
-                if (columnName.equalsIgnoreCase("name")) {
-                    return allGames.stream()
-                            .filter(game -> game.getName().compareToIgnoreCase(value) >= 0)
-                            .sorted((g1, g2) -> ascending 
-                                ? g1.getName().compareToIgnoreCase(g2.getName())
-                                : g2.getName().compareToIgnoreCase(g1.getName()));
-                }
-            }
+            return applyStringFilter(filter, ">=", (gameName, value) -> gameName.compareToIgnoreCase(value) >= 0, ascending);
         }
 
-        // Check for greater than operation (e.g., "name>Go")
-        if (filter.contains(">")) {
-            String[] parts = filter.split(">");
-            if (parts.length == 2) {
-                String columnName = parts[0].trim();
-                String value = parts[1].trim().replaceAll("\"", "");
-
-                if (columnName.equalsIgnoreCase("name")) {
-                    return allGames.stream()
-                            .filter(game -> game.getName().compareToIgnoreCase(value) > 0)
-                            .sorted((g1, g2) -> ascending 
-                                ? g1.getName().compareToIgnoreCase(g2.getName())
-                                : g2.getName().compareToIgnoreCase(g1.getName()));
-                }
-            }
+        // Handle "name<" for lexicographically less than match
+        if (filter.contains("<") && !filter.contains("<=")) { // Ensure it's only "<"
+            return applyStringFilter(filter, "<", (gameName, value) -> gameName.compareToIgnoreCase(value) < 0, ascending);
         }
 
-        // Default case: treat the filter as a simple name contains search
-        return allGames.stream()
+        // Handle "name<=" for less than or equal match
+        if (filter.contains("<=")) {
+            return applyStringFilter(filter, "<=", (gameName, value) -> gameName.compareToIgnoreCase(value) <= 0, ascending);
+        }
+
+        // Default: Treat filter as name contains
+        return filteredGames.stream()
                 .filter(game -> game.getName().toLowerCase().contains(filter.toLowerCase()))
-                .sorted((g1, g2) -> ascending 
-                    ? g1.getName().compareToIgnoreCase(g2.getName())
-                    : g2.getName().compareToIgnoreCase(g1.getName()));
+                .sorted((g1, g2) -> ascending
+                        ? g1.getName().compareToIgnoreCase(g2.getName())
+                        : g2.getName().compareToIgnoreCase(g1.getName()));
     }
 
     /**
@@ -177,7 +108,41 @@ public class Planner implements IPlanner {
      */
     @Override
     public void reset() {
-        allGames.clear();
+        this.filteredGames = new ArrayList<>(allGames); // Restore to full game list
+    }
+
+    /**
+     * Helper method to apply string-based filtering based on a given operator.
+     *
+     * @param filter The filter string
+     * @param operator The operator used in the filter (e.g., "==", "~=", ">", "<")
+     * @param comparisonFunction A lambda function defining the comparison condition
+     * @param ascending Whether to sort in ascending order
+     * @return A stream of filtered and sorted board games
+     */
+    private Stream<BoardGame> applyStringFilter(String filter, String operator,
+                                                StringComparator comparisonFunction, boolean ascending) {
+        String[] parts = filter.split(operator);
+        if (parts.length == 2) {
+            String columnName = parts[0].trim();
+            String value = parts[1].trim().replaceAll("\"", "");
+
+            if (columnName.equalsIgnoreCase("name")) {
+                return filteredGames.stream()
+                        .filter(game -> comparisonFunction.compare(game.getName(), value))
+                        .sorted((g1, g2) -> ascending
+                                ? g1.getName().compareToIgnoreCase(g2.getName())
+                                : g2.getName().compareToIgnoreCase(g1.getName()));
+            }
+        }
+        return Stream.empty();
+    }
+
+    /**
+     * Functional interface for comparing two strings.
+     */
+    @FunctionalInterface
+    private interface StringComparator {
+        boolean compare(String gameName, String value);
     }
 }
-
