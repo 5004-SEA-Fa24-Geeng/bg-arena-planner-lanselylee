@@ -28,9 +28,9 @@ public class StringFilter extends Filter {
     public boolean apply(Game game) {
         String gameValue = game.getName();
         
-        return switch (operator) {
-            case EQUALS -> gameValue.equalsIgnoreCase(value);
-            default -> throw new IllegalArgumentException("Invalid operator for string comparison: " + operator);
+        return switch (getOperator()) {
+            case EQUALS -> gameValue.equalsIgnoreCase(getValue());
+            default -> throw new IllegalArgumentException("Invalid operator for string comparison: " + getOperator());
         };
     }
 } 
