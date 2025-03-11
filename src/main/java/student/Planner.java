@@ -8,8 +8,14 @@ import java.util.stream.Stream;
 import java.util.stream.Collectors;
 
 public class Planner implements IPlanner {
+    /** List containing all board games available for planning. */
     private final List<BoardGame> allGames;
 
+    /**
+     * Constructs a new Planner with the given set of board games.
+     *
+     * @param games Set of board games to be managed by the planner
+     */
     public Planner(Set<BoardGame> games) {
         this.allGames = new ArrayList<>(games);
     }
