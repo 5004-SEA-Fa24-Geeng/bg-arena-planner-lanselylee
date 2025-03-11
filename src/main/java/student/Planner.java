@@ -96,10 +96,10 @@ public class Planner implements IPlanner {
         
         if (filter.contains(">=")) {
             return filteredGames.stream()
-                .filter(game -> game.getName().compareTo(value) >= 0);
+                .filter(game -> game.getName().toLowerCase().compareTo(value) >= 0);
         } else if (filter.contains("<=")) {
             return filteredGames.stream()
-                .filter(game -> game.getName().compareTo(value) <= 0);
+                .filter(game -> game.getName().toLowerCase().compareTo(value) <= 0);
         } else if (filter.contains("==")) {
             return filteredGames.stream()
                 .filter(game -> game.getName().equalsIgnoreCase(value));
@@ -107,16 +107,14 @@ public class Planner implements IPlanner {
             return filteredGames.stream()
                 .filter(game -> !game.getName().equalsIgnoreCase(value));
         } else if (filter.contains("~=")) {
-            // Match only if the value appears as a word or part of a word
-            String regex = ".*\\b" + value + ".*";
             return filteredGames.stream()
-                .filter(game -> game.getName().toLowerCase().matches(regex));
+                .filter(game -> game.getName().toLowerCase().contains(value));
         } else if (filter.contains(">")) {
             return filteredGames.stream()
-                .filter(game -> game.getName().compareTo(value) > 0);
+                .filter(game -> game.getName().toLowerCase().compareTo(value) > 0);
         } else if (filter.contains("<")) {
             return filteredGames.stream()
-                .filter(game -> game.getName().compareTo(value) < 0);
+                .filter(game -> game.getName().toLowerCase().compareTo(value) < 0);
         }
         
         // If no operator is matched, return unfiltered stream
