@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Stream;
+import student.filter.FilterFactory;
 
 public class Planner implements IPlanner {
     /** List containing all board games available for filtering. */
@@ -29,7 +30,7 @@ public class Planner implements IPlanner {
             return allGames.stream();
         }
         return allGames.stream()
-                .filter(game -> game.getName().toLowerCase().contains(filter.toLowerCase()));
+                .filter(game -> FilterFactory.createFilter(filter).apply(game));
     }
 
     @Override
