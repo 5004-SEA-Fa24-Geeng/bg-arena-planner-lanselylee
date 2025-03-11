@@ -57,24 +57,13 @@ public class Planner implements IPlanner {
                     String value = filterStr.substring(filterStr.indexOf('=') + 2).trim();
                     return currentGameName.equalsIgnoreCase(value);
                 } else if (filterLower.matches("\\s*name\\s*~=.*")) {
-                    String value = filterStr.substring(filterStr.indexOf('=') + 1).trim().toLowerCase();
+                    String value = filterStr.substring(filterStr.indexOf('=') + 2).trim().toLowerCase();
                     return currentGameName.toLowerCase().contains(value);
-                } else if (filterLower.matches("\\s*name\\s*>=.*")) {
-                    String value = filterStr.substring(filterStr.indexOf('=') + 1).trim();
-                    return currentGameName.compareToIgnoreCase(value) >= 0;
-                } else if (filterLower.matches("\\s*name\\s*<=.*")) {
-                    String value = filterStr.substring(filterStr.indexOf('=') + 1).trim();
-                    return currentGameName.compareToIgnoreCase(value) <= 0;
-                } else if (filterLower.matches("\\s*name\\s*>.*")) {
-                    String value = filterStr.substring(filterStr.indexOf('>') + 1).trim();
-                    return currentGameName.compareToIgnoreCase(value) > 0;
-                } else if (filterLower.matches("\\s*name\\s*<.*")) {
-                    String value = filterStr.substring(filterStr.indexOf('<') + 1).trim();
-                    return currentGameName.compareToIgnoreCase(value) < 0;
-                } else if (filterLower.matches("\\s*name\\s*!=.*")) {
-                    String value = filterStr.substring(filterStr.indexOf('=') + 1).trim();
-                    return !currentGameName.equalsIgnoreCase(value);
+                } else if (filterLower.matches("\\s*min_players\\s*>.*")) {
+                    int value = Integer.parseInt(filterStr.substring(filterStr.indexOf('>') + 1).trim());
+                    return game.getMinPlayers() > value;
                 }
+                // Add other conditions here...
                 return false;
             }).toList();
         }
