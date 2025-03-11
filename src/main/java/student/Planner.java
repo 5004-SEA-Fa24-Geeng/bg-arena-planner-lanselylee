@@ -74,40 +74,42 @@ public class Planner implements IPlanner {
         String[] parts;
         String value;
 
-        if (filter.contains("==")) {
-            parts = filter.split("==");
-            value = parts[1].trim().replaceAll("\"", "");
-            return stream.filter(game -> game.getName().equalsIgnoreCase(value));
-        }
-        if (filter.contains("~=")) {
-            parts = filter.split("~=");
-            value = parts[1].trim().replaceAll("\"", "");
-            return stream.filter(game -> game.getName().toLowerCase().contains(value.toLowerCase()));
-        }
+        // Check longer operators first
         if (filter.contains(">=")) {
             parts = filter.split(">=");
             value = parts[1].trim().replaceAll("\"", "");
             return stream.filter(game -> game.getName().compareToIgnoreCase(value) >= 0);
-        }
-        if (filter.contains(">")) {
-            parts = filter.split(">");
-            value = parts[1].trim().replaceAll("\"", "");
-            return stream.filter(game -> game.getName().compareToIgnoreCase(value) > 0);
         }
         if (filter.contains("<=")) {
             parts = filter.split("<=");
             value = parts[1].trim().replaceAll("\"", "");
             return stream.filter(game -> game.getName().compareToIgnoreCase(value) <= 0);
         }
-        if (filter.contains("<")) {
-            parts = filter.split("<");
+        if (filter.contains("==")) {
+            parts = filter.split("==");
             value = parts[1].trim().replaceAll("\"", "");
-            return stream.filter(game -> game.getName().compareToIgnoreCase(value) < 0);
+            return stream.filter(game -> game.getName().equalsIgnoreCase(value));
         }
         if (filter.contains("!=")) {
             parts = filter.split("!=");
             value = parts[1].trim().replaceAll("\"", "");
             return stream.filter(game -> !game.getName().equalsIgnoreCase(value));
+        }
+        if (filter.contains("~=")) {
+            parts = filter.split("~=");
+            value = parts[1].trim().replaceAll("\"", "");
+            return stream.filter(game -> game.getName().toLowerCase().contains(value.toLowerCase()));
+        }
+        // Check single-character operators last
+        if (filter.contains(">")) {
+            parts = filter.split(">");
+            value = parts[1].trim().replaceAll("\"", "");
+            return stream.filter(game -> game.getName().compareToIgnoreCase(value) > 0);
+        }
+        if (filter.contains("<")) {
+            parts = filter.split("<");
+            value = parts[1].trim().replaceAll("\"", "");
+            return stream.filter(game -> game.getName().compareToIgnoreCase(value) < 0);
         }
         return stream;
     }
