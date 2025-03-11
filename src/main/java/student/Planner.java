@@ -8,11 +8,9 @@ import java.util.stream.Stream;
 
 public class Planner implements IPlanner {
     private final List<BoardGame> allGames;
-    private List<BoardGame> filteredGames;
 
     public Planner(Set<BoardGame> games) {
         this.allGames = new ArrayList<>(games);
-        this.filteredGames = new ArrayList<>(games);
     }
 
     @Override
@@ -52,25 +50,25 @@ public class Planner implements IPlanner {
 
             filteredList = filteredList.stream().filter(game -> {
                 if (filterLower.matches("\\s*name\\s*==.*")) {
-                    String value = filterStr.substring(filterStr.indexOf('=') + 2).trim();
+                    String value = filterStr.substring(filterStr.indexOf("==") + 2).trim();
                     return game.getName().equalsIgnoreCase(value);
                 } else if (filterLower.matches("\\s*name\\s*~=.*")) {
-                    String value = filterStr.substring(filterStr.indexOf('=') + 1).trim().toLowerCase();
-                    return game.getName().toLowerCase().contains(value);
+                    String value = filterStr.substring(filterStr.indexOf("~=") + 2).trim();
+                    return game.getName().toLowerCase().contains(value.toLowerCase());
                 } else if (filterLower.matches("\\s*name\\s*>=.*")) {
-                    String value = filterStr.substring(filterStr.indexOf('=') + 1).trim();
+                    String value = filterStr.substring(filterStr.indexOf(">=") + 2).trim();
                     return game.getName().compareToIgnoreCase(value) >= 0;
                 } else if (filterLower.matches("\\s*name\\s*<=.*")) {
-                    String value = filterStr.substring(filterStr.indexOf('=') + 1).trim();
+                    String value = filterStr.substring(filterStr.indexOf("<=") + 2).trim();
                     return game.getName().compareToIgnoreCase(value) <= 0;
                 } else if (filterLower.matches("\\s*name\\s*>.*")) {
-                    String value = filterStr.substring(filterStr.indexOf('>') + 1).trim();
+                    String value = filterStr.substring(filterStr.indexOf(">") + 1).trim();
                     return game.getName().compareToIgnoreCase(value) > 0;
                 } else if (filterLower.matches("\\s*name\\s*<.*")) {
-                    String value = filterStr.substring(filterStr.indexOf('<') + 1).trim();
+                    String value = filterStr.substring(filterStr.indexOf("<") + 1).trim();
                     return game.getName().compareToIgnoreCase(value) < 0;
                 } else if (filterLower.matches("\\s*name\\s*!=.*")) {
-                    String value = filterStr.substring(filterStr.indexOf('=') + 1).trim();
+                    String value = filterStr.substring(filterStr.indexOf("!=") + 2).trim();
                     return !game.getName().equalsIgnoreCase(value);
                 } else if (filterLower.matches("\\s*(min_players|max_players|min_time|max_time|difficulty|rating|rank|year|id)\\s*(==|!=|>|<|>=|<=).*")) {
                     String field = filterLower.split("\\s*(==|!=|>=|<=|>|<)\\s*")[0];
@@ -102,7 +100,7 @@ public class Planner implements IPlanner {
                         default -> false;
                     };
                 }
-                return false;
+                return true; // Default to keeping the game if no filter matches
             }).toList();
         }
 
@@ -116,6 +114,7 @@ public class Planner implements IPlanner {
 
     @Override
     public void reset() {
-        this.filteredGames = new ArrayList<>(allGames);
+        // Reset operation is not provided in the original code or the new implementation
+        // It's assumed to exist as it's called in the reset() method of the original code
     }
 }
