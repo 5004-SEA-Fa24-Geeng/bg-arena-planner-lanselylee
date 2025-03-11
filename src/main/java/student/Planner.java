@@ -59,26 +59,35 @@ public class Planner implements IPlanner {
                 } else if (filterLower.matches("\\s*name\\s*~=.*")) {
                     String value = filterStr.substring(filterStr.indexOf('=') + 1).trim().toLowerCase();
                     return currentGameName.toLowerCase().contains(value);
-                } else if (filterLower.matches("\\s*name\\s*>=.*")) {
-                    String value = filterStr.substring(filterStr.indexOf('=') + 1).trim();
-                    return currentGameName.compareToIgnoreCase(value) >= 0;
-                } else if (filterLower.matches("\\s*name\\s*<=.*")) {
-                    String value = filterStr.substring(filterStr.indexOf('=') + 1).trim();
-                    return currentGameName.compareToIgnoreCase(value) <= 0;
-                } else if (filterLower.matches("\\s*name\\s*>.*")) {
-                    String value = filterStr.substring(filterStr.indexOf('>') + 1).trim();
-                    return currentGameName.compareToIgnoreCase(value) > 0;
-                } else if (filterLower.matches("\\s*name\\s*<.*")) {
-                    String value = filterStr.substring(filterStr.indexOf('<') + 1).trim();
-                    return currentGameName.compareToIgnoreCase(value) < 0;
-                } else if (filterLower.matches("\\s*name\\s*!=.*")) {
-                    String value = filterStr.substring(filterStr.indexOf('=') + 1).trim();
-                    return !currentGameName.equalsIgnoreCase(value);
-                } else if (filterLower.matches("\\s*min_players\\s*>.*")) {
-                    String value = filterStr.substring(filterStr.indexOf('>') + 1).trim();
-                    return game.getMinPlayers() > Integer.parseInt(value);
+                } else if (filterLower.matches("\\s*(min_players|max_players|min_time|max_time|difficulty|rating|rank|year|id)\\s*(>=|<=|==|!=|>|<).*")) {
+                    String[] parts = filterLower.split("\\s*(==|!=|>=|<=|>|<)\\s*");
+                    String field = filterLower.split("[><=!]+")[0].trim();
+                    String operator = filterLower.replaceAll(".*?(>=|<=|!=|>|<|==).*", "$1").trim();
+                    int value = Integer.parseInt(filterStr.substring(filterStr.indexOf(operator) + operator.length()).trim());
+
+                    int fieldValue = switch (field) {
+                        case "min_players" -> game.getMinPlayers();
+                        case "max_players" -> game.getMaxPlayers();
+                        case "min_time" -> game.getMinPlayTime();
+                        case "max_time" -> game.getMaxPlayTime();
+                        case "difficulty" -> game.getDifficulty();
+                        case "rating" -> (int) game.getRating();
+                        case "rank" -> game.getRank();
+                        case "year" -> game.getYearPublished();
+                        case "id" -> game.getId();
+                        default -> 0;
+                    };
+
+                    return switch (operator) {
+                        case ">" -> value < value;
+                        case "<" -> value > fieldValue;
+                        case ">=" -> fieldValue >= value;
+                        case "<=" -> field.equalsIgnoreCase("rating") ? game.getRating() <= value : value >= field;
+                        case "==" -> field.equalsIgnoreCase("rating") ? game.getRating() == value : value == field;
+                        case "!=" -> field.equalsIgnoreCase("rating") ? game.getRating() != value : value != field;
+                        default -> false;
+                    };
                 }
-                // Add other numeric or additional conditions here as needed...
                 return false;
             }).toList();
         }
