@@ -53,11 +53,11 @@ public class GameListTest {
     public void testGetGamesSortedBy() {
         gameList.addGame(testGame1);
         gameList.addGame(testGame2);
-        List<String> result = gameList.getGameNames();  // This returns names in case-insensitive ascending order
+        List<String> result = gameList.getGameNames();
         assertNotNull(result);
         assertEquals(2, result.size());
-        assertEquals("Chess", result.get(0));
-        assertEquals("Catan", result.get(1));
+        assertEquals("Catan", result.get(0));
+        assertEquals("Chess", result.get(1));
     }
 
     @Test
@@ -76,7 +76,7 @@ public class GameListTest {
         List<String> result = gameList.getGameNames();
         assertNotNull(result);
         assertEquals(2, result.size());
-        assertEquals("Chess", result.get(0));
-        assertEquals("Catan", result.get(1));
+        assertEquals("Catan", result.get(0));
+        assertEquals("Chess", result.get(1));
     }
 } 

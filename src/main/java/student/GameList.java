@@ -176,6 +176,7 @@ public class GameList implements IGameList {
 
     private List<BoardGame> getSortedGames() {
         return games.stream()
+                .map(game -> (BoardGame) game)  // Explicitly cast Game to BoardGame
                 .sorted(Comparator.comparing(Game::getName, String.CASE_INSENSITIVE_ORDER))
                 .collect(Collectors.toList());
     }

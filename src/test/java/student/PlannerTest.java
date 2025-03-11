@@ -46,8 +46,8 @@ public class PlannerTest {
         
         // Test contains
         filtered = planner.filter("name ~= Go").toList();
-        assertEquals(5, filtered.size());
-        Set<String> expectedNames = Set.of("Go", "Go Fish", "golang", "GoRami", "Monopoly");
+        assertEquals(4, filtered.size());
+        Set<String> expectedNames = Set.of("Go", "Go Fish", "golang", "GoRami");
         Set<String> actualNames = filtered.stream()
             .map(BoardGame::getName)
             .collect(Collectors.toSet());
