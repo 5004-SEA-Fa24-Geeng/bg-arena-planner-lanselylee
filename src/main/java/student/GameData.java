@@ -53,7 +53,7 @@ public enum GameData {
      */
     public static GameData fromColumnName(String columnName) {
         for (GameData col : GameData.values()) {
-            if (col.getColumnName().equals(columnName)) {
+            if (col.getColumnName().equalsIgnoreCase(columnName)) {
                 return col;
             }
         }
