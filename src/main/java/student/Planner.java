@@ -96,26 +96,25 @@ public class Planner implements IPlanner {
         
         if (filter.contains(">=")) {
             return filteredGames.stream()
-                .filter(game -> game.getName().toLowerCase().compareTo(value) >= 0);
+                .filter(game -> game.getName().compareTo(value) >= 0);
         } else if (filter.contains("<=")) {
             return filteredGames.stream()
-                .filter(game -> game.getName().toLowerCase().compareTo(value) <= 0);
+                .filter(game -> game.getName().compareTo(value) <= 0);
         } else if (filter.contains("==")) {
             return filteredGames.stream()
-                .filter(game -> game.getName().toLowerCase().equals(value));
+                .filter(game -> game.getName().equalsIgnoreCase(value));
         } else if (filter.contains("!=")) {
             return filteredGames.stream()
-                .filter(game -> !game.getName().toLowerCase().equals(value));
+                .filter(game -> !game.getName().equalsIgnoreCase(value));
         } else if (filter.contains("~=")) {
-            // Fix: Only return games where the name contains the exact value
             return filteredGames.stream()
                 .filter(game -> game.getName().toLowerCase().contains(value.toLowerCase()));
         } else if (filter.contains(">")) {
             return filteredGames.stream()
-                .filter(game -> game.getName().toLowerCase().compareTo(value) > 0);
+                .filter(game -> game.getName().compareTo(value) > 0);
         } else if (filter.contains("<")) {
             return filteredGames.stream()
-                .filter(game -> game.getName().toLowerCase().compareTo(value) < 0);
+                .filter(game -> game.getName().compareTo(value) < 0);
         }
         
         // If no operator is matched, return unfiltered stream
