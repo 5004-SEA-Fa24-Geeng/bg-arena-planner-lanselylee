@@ -105,8 +105,7 @@ public interface IGameList {
      * 
      * @param str The string to parse and remove games from the list.
      * @throws IllegalArgumentException If the string is not valid.
-     * 
      */
     void removeFromList(String str) throws IllegalArgumentException;
-
 }
+

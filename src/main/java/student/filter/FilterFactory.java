@@ -6,7 +6,7 @@ import student.Operations;
 /**
  * Factory for creating filters.
  */
-public class FilterFactory {
+public final class FilterFactory {
     
     // Add private constructor to prevent instantiation
     private FilterFactory() {

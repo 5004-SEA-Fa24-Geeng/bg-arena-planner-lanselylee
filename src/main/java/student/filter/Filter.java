@@ -8,9 +8,12 @@ import student.Operations;
  * Abstract class for filtering games.
  */
 public abstract class Filter {
-    protected final GameData column;
-    protected final Operations operator;
-    protected final String value;
+    /** The column to filter on. */
+    private final GameData column;
+    /** The operator to use for comparison. */
+    private final Operations operator;
+    /** The value to compare against. */
+    private final String value;
 
     /**
      * Constructor for Filter.
@@ -26,10 +29,37 @@ public abstract class Filter {
     }
 
     /**
+     * Gets the column being filtered on.
+     *
+     * @return the column
+     */
+    protected GameData getColumn() {
+        return column;
+    }
+
+    /**
+     * Gets the operator being used.
+     *
+     * @return the operator
+     */
+    protected Operations getOperator() {
+        return operator;
+    }
+
+    /**
+     * Gets the value being compared against.
+     *
+     * @return the value
+     */
+    protected String getValue() {
+        return value;
+    }
+
+    /**
      * Apply the filter to a game.
      *
      * @param game the game to filter
      * @return true if the game passes the filter
      */
     public abstract boolean apply(Game game);
-} 
+}

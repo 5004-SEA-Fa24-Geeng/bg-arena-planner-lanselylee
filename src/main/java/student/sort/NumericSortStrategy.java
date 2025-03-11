@@ -5,9 +5,9 @@ import student.GameData;
 import java.util.Comparator;
 
 public class NumericSortStrategy implements GameSortStrategy {
-    /** The column to sort by */
+    /** The column to sort by. */
     private final GameData column;
-    /** Whether to sort in ascending order */
+    /** Whether to sort in ascending order. */
     private final boolean ascending;
 
     /**

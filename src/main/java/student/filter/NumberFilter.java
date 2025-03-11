@@ -28,19 +28,19 @@ public class NumberFilter extends Filter {
      */
     @Override
     public boolean apply(Game game) {
-        double gameValue = switch (column) {
+        double gameValue = switch (getColumn()) {
             case MIN_PLAYERS -> game.getMinPlayers();
             case MAX_PLAYERS -> game.getMaxPlayers();
             case MIN_TIME -> game.getMinPlayTime();
             case MAX_TIME -> game.getMaxPlayTime();
             case RATING -> game.getRating();
             case DIFFICULTY -> game.getDifficulty();
-            default -> throw new IllegalArgumentException("Invalid column for number comparison: " + column);
+            default -> throw new IllegalArgumentException("Invalid column for number comparison: " + getColumn());
         };
 
-        double compareValue = Double.parseDouble(value);
+        double compareValue = Double.parseDouble(getValue());
         
-        return switch (operator) {
+        return switch (getOperator()) {
             case EQUALS -> gameValue == compareValue;
             case GREATER_THAN -> gameValue > compareValue;
             case LESS_THAN -> gameValue < compareValue;

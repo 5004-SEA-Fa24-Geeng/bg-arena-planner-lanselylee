@@ -8,9 +8,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class GameList implements IGameList {
-    /** List of board games stored in this collection */
+    /** List of board games stored in this collection. */
     private List<BoardGame> games;
-    /** Constant representing the "all" command for adding/removing games */
+    /** Constant representing the "all" command for adding/removing games. */
     public static final String ADD_ALL = "all";
 
     /**
@@ -204,3 +204,4 @@ public class GameList implements IGameList {
             .collect(Collectors.toList());
     }
 }
+
