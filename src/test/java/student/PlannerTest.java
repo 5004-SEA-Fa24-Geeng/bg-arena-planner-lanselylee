@@ -64,5 +64,26 @@ public class PlannerTest {
         assertEquals(expectedNames2, actualNames2);
     }
     
-
+    @Test
+    public void testFilterNumericGreaterThan() {
+        IPlanner planner = new Planner(games);
+        
+        // Test greater than for minPlayers
+        List<BoardGame> filtered = planner.filter("minPlayers>5").toList();
+        assertEquals(3, filtered.size());
+        
+        // Convert to set of names for easier comparison
+        Set<String> actualNames = filtered.stream()
+            .map(BoardGame::getName)
+            .collect(Collectors.toSet());
+        
+        Set<String> expectedNames = Set.of("GoRami", "Monopoly", "Tucano");
+        assertEquals(expectedNames, actualNames);
+        
+        // Test the output is sorted by name by default
+        List<String> sortedNames = filtered.stream()
+            .map(BoardGame::getName)
+            .collect(Collectors.toList());
+        assertEquals(List.of("GoRami", "Monopoly", "Tucano"), sortedNames);
+    }
 }

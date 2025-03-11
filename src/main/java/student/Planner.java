@@ -86,9 +86,8 @@ public class Planner implements IPlanner {
                 }
 
                 // Handle numeric filters
-                if (filterLower.matches(
-                        "(min_players|max_players|min_time|max_time|"
-                        + "difficulty|rating|rank|year|id).*")) {
+                if (filterLower.matches(".*?(minplayers|maxplayers|mintime|"
+                        + "maxtime|difficulty|rating|rank|year|id).*")) {
                     String operator;
                     String value;
                     
@@ -114,13 +113,13 @@ public class Planner implements IPlanner {
                         return false;
                     }
 
-                    String field = filterLower.split("[^a-z_]")[0];
+                    String field = filterLower.split("[^a-z]")[0];
                     double numericValue = Double.parseDouble(value);
                     double fieldValue = switch (field) {
-                        case "min_players" -> game.getMinPlayers();
-                        case "max_players" -> game.getMaxPlayers();
-                        case "min_time" -> game.getMinPlayTime();
-                        case "max_time" -> game.getMaxPlayTime();
+                        case "minplayers" -> game.getMinPlayers();
+                        case "maxplayers" -> game.getMaxPlayers();
+                        case "mintime" -> game.getMinPlayTime();
+                        case "maxtime" -> game.getMaxPlayTime();
                         case "difficulty" -> game.getDifficulty();
                         case "rating" -> game.getRating();
                         case "rank" -> game.getRank();
