@@ -60,19 +60,8 @@ public class PlannerTest {
             .sorted()
             .collect(Collectors.toList());
         
-        // Print out actual comparison result for debugging
-        System.out.println("Comparison result: " + "Go Fish".compareTo("Go"));
-        System.out.println("ASCII values:");
-        System.out.println("Space: " + (int)' ');
-        System.out.println("F: " + (int)'F');
-        
         List<String> expectedNames2 = List.of("Go Fish", "GoRami", "Monopoly", "Tucano", "golang");
-        
-        assertEquals(expectedNames2.size(), actualNames2.size(), 
-            String.format("Wrong number of games returned. Expected %d games after 'Go': %s, but got %d games: %s", 
-                expectedNames2.size(), expectedNames2, actualNames2.size(), actualNames2));
-        assertEquals(expectedNames2, actualNames2,
-            "Games returned don't match expected games that come after 'Go' in lexicographical order");
+        assertEquals(expectedNames2, actualNames2);
     }
     
 

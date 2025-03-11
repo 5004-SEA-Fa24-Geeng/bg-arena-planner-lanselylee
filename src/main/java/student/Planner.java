@@ -63,8 +63,7 @@ public class Planner implements IPlanner {
                     return game.getName().compareToIgnoreCase(value) <= 0;
                 } else if (filterLower.matches("\\s*name\\s*>.*")) {
                     String value = filterStr.substring(filterStr.indexOf(">") + 1).trim();
-                    String gameName = game.getName();
-                    return gameName.compareToIgnoreCase(value) > 0 && !gameName.equalsIgnoreCase(value);
+                    return game.getName().compareToIgnoreCase(value) > 0;
                 } else if (filterLower.matches("\\s*name\\s*<.*")) {
                     String value = filterStr.substring(filterStr.indexOf("<") + 1).trim();
                     return game.getName().compareToIgnoreCase(value) < 0;
@@ -101,7 +100,7 @@ public class Planner implements IPlanner {
                         default -> false;
                     };
                 }
-                return false; // Default to excluding the game if no filter matches
+                return true;  // Keep games that don't match any filter
             }).toList();
         }
 
