@@ -71,15 +71,12 @@ public class Planner implements IPlanner {
         // Apply appropriate filter based on the filter string
         Stream<BoardGame> filtered;
         
-        String normalizedFilter = filter.toLowerCase().replace("_", "");
+        String normalizedFilter = filter.toLowerCase().trim().replace("_", "");
         if (normalizedFilter.startsWith("minplayers")) {
             filtered = applyMinPlayersFilter(filter);
-        } else if (normalizedFilter.startsWith("name")) {
-            filtered = applyNameFilter(filter);
         } else {
-            // Changed default filter to use ~= (contains) behavior
-            filtered = filteredGames.stream()
-                .filter(game -> game.getName().toLowerCase().contains(normalizedFilter));
+            // Always treat as a name filter, either with explicit "name" prefix or without
+            filtered = applyNameFilter(normalizedFilter.startsWith("name") ? filter : "name~=" + filter);
         }
 
         return filtered.sorted(comparator);

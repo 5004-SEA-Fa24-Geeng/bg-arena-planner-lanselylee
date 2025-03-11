@@ -10,7 +10,7 @@ import java.io.File;
 
 public class GameList implements IGameList {
     /** List of board games stored in this collection. */
-    private List<BoardGame> games;
+    private List<Game> games;
     /** Constant representing the "all" command for adding/removing games. */
     public static final String ADD_ALL = "all";
 
@@ -27,11 +27,10 @@ public class GameList implements IGameList {
      * @return true if the game was added successfully, false otherwise
      */
     public boolean addGame(Game game) {
-        if (!(game instanceof BoardGame)) {
+        if (game == null || games.contains(game)) {
             return false;
         }
-        BoardGame boardGame = (BoardGame) game;
-        return !games.contains(boardGame) && games.add(boardGame);
+        return games.add(game);
     }
 
     /**
@@ -49,11 +48,7 @@ public class GameList implements IGameList {
      * @return true if the game is in the list, false otherwise
      */
     public boolean contains(Game game) {
-        if (!(game instanceof BoardGame)) {
-            return false;
-        }
-        BoardGame boardGame = (BoardGame) game;
-        return games.contains(boardGame);
+        return games.contains(game);
     }
 
     /**
@@ -66,10 +61,12 @@ public class GameList implements IGameList {
 
     @Override
     public List<String> getGameNames() {
-        return games.stream()
-                .map(BoardGame::getName)
-                .sorted(String.CASE_INSENSITIVE_ORDER)
-                .collect(Collectors.toList());
+        List<String> names = new ArrayList<>();
+        for (Game game : games) {
+            names.add(game.getName());
+        }
+        Collections.sort(names, String.CASE_INSENSITIVE_ORDER);
+        return names;
     }
 
     @Override
@@ -179,7 +176,7 @@ public class GameList implements IGameList {
 
     private List<BoardGame> getSortedGames() {
         return games.stream()
-                .sorted(Comparator.comparing(BoardGame::getName, String.CASE_INSENSITIVE_ORDER))
+                .sorted(Comparator.comparing(Game::getName, String.CASE_INSENSITIVE_ORDER))
                 .collect(Collectors.toList());
     }
 
@@ -203,10 +200,13 @@ public class GameList implements IGameList {
      * @return List of games matching the name
      */
     public List<Game> getGamesByName(String name) {
-        return games.stream()
-            .filter(game -> game.getName().equals(name))
-            .map(game -> (Game) game)
-            .collect(Collectors.toList());
+        List<Game> result = new ArrayList<>();
+        for (Game game : games) {
+            if (game.getName().equals(name)) {
+                result.add(game);
+            }
+        }
+        return result;
     }
 }
 
